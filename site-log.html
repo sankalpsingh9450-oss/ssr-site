@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SSR Site Log: daily progress report in four taps</title>
+<meta name="description" content="Fill in today's site work in four short screens and download or share a client-ready Daily Progress Report PDF. Free, from SSR Group Civil.">
+<style>
+:root{
+  --navy:#0F2A4A; --gold:#C9A227; --gold-soft:#EAD98E;
+  --bg:#F2F2EE; --sheet:#FFFFFF; --ink:#14213A; --ink-2:#55627A; --line:#D3D7DF; --field:#FFFFFF; --shade:#F4F5F8;
+  --danger:#B23A3A; --warn:#B8731A; --ok:#2E7D5B;
+  --head:Cambria,"Palatino Linotype",Georgia,"Times New Roman",serif;
+  --body:Calibri,"Segoe UI",Roboto,system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#0D1422; --sheet:#151E33; --ink:#E7EAF1; --ink-2:#A3ACBF; --line:#2A3650; --field:#0F1729; --navy:#0B2140; --shade:#1B2640; }
+}
+:root[data-theme="dark"]{ --bg:#0D1422; --sheet:#151E33; --ink:#E7EAF1; --ink-2:#A3ACBF; --line:#2A3650; --field:#0F1729; --navy:#0B2140; --shade:#1B2640; }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.45;-webkit-text-size-adjust:100%;padding-bottom:96px}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:680px;margin:0 auto;padding:0 16px}
+
+.band{background:var(--navy);color:#F7F7F4;padding:14px 0 12px;border-bottom:3px solid var(--gold)}
+.band .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{display:flex;gap:12px}
+.brand .rule{width:4px;background:var(--gold);border-radius:2px;flex:none}
+.wordmark{font-family:var(--head);font-size:22px;line-height:1.1}
+.tag{font-family:var(--head);font-size:15px;color:var(--gold-soft)}
+.ghost.onnavy{border-color:#3A4E6F;color:#F7F7F4;background:transparent;min-height:40px;padding:6px 12px}
+
+.stepbar{display:flex;justify-content:space-between;align-items:center;padding:14px 0 6px}
+.stepbar .lbl{font-family:var(--head);font-size:22px}
+.dots{display:flex;gap:6px}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line);display:block}
+.dots i.on{background:var(--gold)}
+.dots i.done{background:var(--navy)}
+.lead{color:var(--ink-2);margin:0 0 12px;font-size:16px}
+
+section.blk{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:14px 14px 10px;margin:0 0 12px}
+section.blk h2{font-family:var(--head);font-weight:400;font-size:19px;margin:0 0 10px;color:var(--navy)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) section.blk h2{color:var(--gold-soft)} }
+:root[data-theme="dark"] section.blk h2{color:var(--gold-soft)}
+.f{display:block;margin:0 0 10px}
+.f>span,legend{display:block;font-size:15px;color:var(--ink-2);margin-bottom:3px}
+input[type=text],input[type=number],input[type=date],textarea,select{width:100%;border:1px solid var(--line);background:var(--field);border-radius:8px;padding:9px 11px;min-height:46px}
+textarea{min-height:64px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+fieldset{border:0;padding:0;margin:0 0 10px;min-width:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{border:1px solid var(--line);background:var(--field);border-radius:999px;padding:8px 14px;cursor:pointer;min-height:44px}
+.chips button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.rows{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;gap:6px;border-top:1px solid var(--line);padding-top:8px}
+.row.work{grid-template-columns:1fr auto}
+.row.work textarea{grid-column:1/2}
+.row.work .ph{grid-column:1/2;border:1px dashed var(--line);background:transparent;border-radius:8px;padding:8px 10px;color:var(--ink-2);cursor:pointer;min-height:40px;font-size:15px;text-align:left}
+.row.work .ph.has{border-style:solid;color:var(--ink)}
+.row .sub{display:grid;grid-template-columns:1fr 1fr;gap:6px;grid-column:1/2}
+.row .x{grid-column:2/3;grid-row:1/4;align-self:start;width:44px;height:44px;border:1px solid var(--line);background:var(--field);border-radius:8px;cursor:pointer;color:var(--ink-2);font-size:22px;line-height:1}
+.row.tri{grid-template-columns:1fr auto}
+.row.tri .sub3{display:grid;grid-template-columns:1.6fr 1fr 1.4fr;gap:6px;grid-column:1/2}
+.row.tri .x{grid-row:1/2}
+.row.mp{grid-template-columns:1fr 92px 44px;align-items:center;padding-top:6px}
+.row.mp input[type=number]{text-align:center;font-size:19px}
+.row.mp .x{grid-column:3/4;grid-row:auto}
+.add{border:1px dashed var(--line);background:transparent;border-radius:8px;padding:10px 12px;cursor:pointer;color:var(--ink-2);margin-top:8px;width:100%;min-height:44px}
+.hint{font-size:14px;color:var(--ink-2);margin:6px 0 0}
+.hint.ai{display:none}
+details.fold{border:1px solid var(--line);border-radius:10px;background:var(--sheet);margin:0 0 12px}
+details.fold>summary{cursor:pointer;padding:12px 14px;font-family:var(--head);font-size:18px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::after{content:"+";color:var(--ink-2);font-size:22px}
+details.fold[open]>summary::after{content:"\2212"}
+details.fold>summary small{display:block;font-family:var(--body);font-size:14px;color:var(--ink-2)}
+details.fold .inner{padding:0 14px 12px}
+details.fold .inner h3{font-family:var(--head);font-weight:400;font-size:17px;margin:12px 0 8px;color:var(--navy)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) details.fold .inner h3{color:var(--gold-soft)} }
+:root[data-theme="dark"] details.fold .inner h3{color:var(--gold-soft)}
+
+.builder{border:1px solid var(--line);border-radius:8px;padding:10px 10px 8px;margin:0 0 12px;background:var(--shade)}
+.builder .out{font-size:15px;margin:8px 0 8px;padding:8px 10px;background:var(--sheet);border-left:3px solid var(--gold);border-radius:4px;min-height:2.4em}
+.builder .out.empty{color:var(--ink-2)}
+.builder .go{display:flex;gap:8px;align-items:center}
+.builder .go .ghost{flex:1;background:var(--navy);color:#fff;border-color:var(--navy);font-weight:600;min-height:48px}
+.voice{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px}
+.mic{flex:1 1 200px;border:1px solid var(--navy);background:var(--sheet);color:var(--navy);border-radius:8px;padding:11px 14px;min-height:48px;cursor:pointer;font-weight:600}
+.mic.listening{background:var(--danger);border-color:var(--danger);color:#fff}
+@media (prefers-reduced-motion:no-preference){.mic.listening{animation:pulse 1.2s ease-in-out infinite}}
+@keyframes pulse{50%{opacity:.75}}
+.langs{display:flex;gap:4px}
+.langs button{border:1px solid var(--line);background:var(--field);border-radius:999px;padding:6px 12px;min-height:40px;cursor:pointer;font-size:15px}
+.langs button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.live{flex-basis:100%;min-height:1.4em;font-size:15px;color:var(--ink-2)}
+.voice.off{display:none}
+.strip{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.strip::-webkit-scrollbar{display:none}
+.pick{flex:none;border:1px solid var(--line);background:var(--field);border-radius:999px;padding:8px 13px;cursor:pointer;min-height:42px;font-size:15px;white-space:nowrap}
+.pick.sev-High{border-color:var(--danger)}.pick.sev-Medium{border-color:var(--warn)}
+.chips.wrapissues{flex-wrap:wrap}
+
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--bg);padding:10px 0 max(10px,env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.bar .in{display:flex;gap:8px;max-width:680px;margin:0 auto;padding:0 16px}
+.primary{flex:1;border:0;background:var(--navy);color:#fff;border-radius:8px;padding:13px 16px;font-weight:600;cursor:pointer;border-bottom:3px solid var(--gold);min-height:50px}
+.primary:disabled{opacity:.55;cursor:default}
+.ghost{border:1px solid var(--line);background:var(--sheet);border-radius:8px;padding:10px 14px;cursor:pointer;min-height:46px}
+.status{min-height:1.4em;margin:8px 0 0;font-size:15px;color:var(--ink-2)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
+.tools .status{margin:0;flex-basis:100%}
+#polishBtn,#undoBtn,#shareBtn{display:none}
+
+.photos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+.photo{background:var(--sheet);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.photo img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.photo input{border:0;border-top:1px solid var(--line);border-radius:0;min-height:40px;font-size:14px}
+.photo .rm{width:100%;border:0;border-top:1px solid var(--line);background:transparent;color:var(--ink-2);padding:6px;cursor:pointer;font-size:14px}
+.filebtn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;min-height:46px;width:100%}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+
+.paper{background:#fff;color:#14213A;border:1px solid var(--line);border-radius:6px;overflow:hidden;font-family:var(--body);font-size:14px;line-height:1.4}
+.paper .ph{background:#0F2A4A;color:#fff;padding:14px 16px 12px;border-bottom:4px solid #C9A227;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.paper .ph .co{display:flex;gap:10px}
+.paper .ph .co i{display:block;width:4px;background:#C9A227;flex:none}
+.paper .ph b{display:block;font-family:var(--head);font-weight:700;font-size:20px;line-height:1.1}
+.paper .ph em{display:block;font-family:var(--head);font-style:normal;color:#EAD98E;margin-top:2px}
+.paper .ph .rt{text-align:right;color:#C9D1E0;font-size:12.5px}
+.paper .pb{padding:12px 16px 18px}
+.paper .det{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;padding-bottom:10px;border-bottom:2px solid #C9A227;margin-bottom:12px}
+.paper .det small{display:block;color:#55627A;font-size:12px}
+.paper h3{font-family:var(--head);color:#0F2A4A;font-size:15px;margin:12px 0 6px;padding-bottom:3px;border-bottom:1px solid #D3D7DF}
+.paper table{width:100%;border-collapse:collapse;font-size:13px}
+.paper th{background:#0F2A4A;color:#fff;text-align:left;padding:5px 6px;font-weight:600}
+.paper td{padding:5px 6px;border-bottom:1px solid #E3E6EC;vertical-align:top}
+.paper tr:nth-child(even) td{background:#F4F5F8}
+.paper td.r,.paper th.r{text-align:right}
+.paper tr.tot td{font-weight:700;background:#fff}
+.paper .sev-High{color:#B23A3A;font-weight:700}.paper .sev-Medium{color:#B8731A;font-weight:700}.paper .sev-Low{color:#2E7D5B;font-weight:700}
+.paper ol{margin:0;padding-left:22px}
+.paper ol li{margin:0 0 6px}
+.paper ol li small{display:block;color:#55627A;font-size:12px}
+.paper p{margin:0 0 6px}
+.paper .nil{color:#55627A}
+.paper .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.paper .pgrid figure{margin:0}
+.paper .pgrid img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#F4F5F8;display:block}
+.paper .pgrid figcaption{font-size:11.5px;color:#55627A;margin-top:3px}
+.paper .sig{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:26px}
+.paper .sig div{border-top:1px solid #14213A;padding-top:4px;font-size:12px;color:#55627A}
+.paper .sig div b{display:block;color:#14213A;font-weight:400;font-size:13.5px}
+.paper .pf{border-top:1px solid #E3E6EC;padding:8px 16px;font-size:11.5px;color:#55627A}
+
+.drawer{display:none;background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
+.drawer.open{display:block}
+.drawer h2{font-family:var(--head);font-weight:400;font-size:20px;margin:0 0 6px}
+.drawer ul{list-style:none;margin:0;padding:0}
+.drawer li{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.drawer li .nm b{font-weight:600}
+.drawer li .nm small{display:block;color:var(--ink-2);font-size:14px}
+.drawer li .ac{display:flex;gap:6px}
+.drawer .ghost{padding:6px 10px;min-height:38px;font-size:15px}
+.foot{color:var(--ink-2);font-size:14px;padding:18px 0 12px;border-top:1px solid var(--line)}
+@media print{
+  body{background:#fff;padding:0}
+  .band,.stepbar,.lead,.step:not([data-step="4"]),.tools,.drawer,.foot,.bar,.photoblock,details.fold,.previewh{display:none !important}
+  .paper{border:0;border-radius:0;font-size:12.5px}
+  @page{size:A4;margin:12mm}
+}
+</style>
+<link rel="canonical" href="https://ssrgroupcivil.in/site-log">
+<style id="ssr-site-theme">
+:root{--navy:#1e1b17;--gold:#b3924d;--bg:#f8f5ef;--sheet:#fffdf9;--ink:#1e1b17;--ink-2:#5a544b;--line:#e4ddcf;--field:#fffdf9;--shade:#f1ece2}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]) .band{background:#fffdf9;color:#1e1b17;border-bottom:1px solid #e4ddcf}
+  :root:not([data-theme="dark"]) .band .tag{color:#8c6f34}
+  :root:not([data-theme="dark"]) .ghost.onnavy{border-color:#d1c8b6;color:#1e1b17}
+}
+:root[data-theme="light"] .band{background:#fffdf9;color:#1e1b17;border-bottom:1px solid #e4ddcf}
+:root[data-theme="light"] .band .tag{color:#8c6f34}
+:root[data-theme="light"] .ghost.onnavy{border-color:#d1c8b6;color:#1e1b17}
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="wrap">
+    <div class="brand">
+      <span class="rule" aria-hidden="true"></span>
+      <div><div class="wordmark">SSR Site Log</div><div class="tag">Daily progress report</div></div>
+    </div>
+    <button class="ghost onnavy" id="reportsBtn" type="button">Saved</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="drawer" id="drawer">
+    <h2>Saved reports</h2>
+    <p class="hint" id="drawerHint"></p>
+    <ul id="savedList"></ul>
+    <div class="tools" style="margin-top:8px"><button class="ghost" type="button" id="saveNowBtn">Save current</button><button class="ghost" type="button" id="newBtn">Blank report</button></div>
+  </div>
+
+  <div class="stepbar"><span class="lbl" id="stepLabel"></span><span class="dots" id="dots" aria-hidden="true"></span></div>
+  <p class="lead" id="stepLead"></p>
+
+  <!-- Step 1: Today -->
+  <section class="step" data-step="1">
+    <details class="fold" id="detailsFold">
+      <summary><span><span id="detailsTitle">Letterhead</span><small id="detailsSub">Company, project and your name, remembered for next time</small></span></summary>
+      <div class="inner">
+        <label class="f"><span>Company or consultant name</span><input type="text" data-k="company" placeholder="Appears on the letterhead"></label>
+        <label class="f"><span>Project</span><input type="text" data-k="project" placeholder="Project name"></label>
+        <label class="f"><span>Site location</span><input type="text" data-k="location" placeholder="Area, city"></label>
+        <label class="f"><span>Prepared by</span><input type="text" data-k="preparedBy" placeholder="Your name"></label>
+      </div>
+    </details>
+    <section class="blk">
+      <label class="f"><span>Date</span><input type="date" data-k="date"></label>
+      <fieldset><legend>Weather</legend>
+        <div class="chips" id="weatherChips">
+          <button type="button" data-v="Clear">Clear</button><button type="button" data-v="Hot">Hot</button><button type="button" data-v="Cloudy">Cloudy</button><button type="button" data-v="Light rain">Light rain</button><button type="button" data-v="Heavy rain">Heavy rain</button><button type="button" data-v="Fog">Fog</button>
+        </div>
+      </fieldset>
+    </section>
+    <section class="blk">
+      <h2>Manpower today</h2>
+      <div class="rows" id="list-manpower"></div>
+      <div class="grid2" style="margin-top:8px">
+        <button class="ghost" type="button" id="sameBtn">Same as last report</button>
+        <button class="add" type="button" data-add="manpower" style="margin:0">+ Add a trade</button>
+      </div>
+      <p class="hint">Trades left at zero are not printed.</p>
+    </section>
+  </section>
+
+  <!-- Step 2: Work done -->
+  <section class="step" data-step="2" hidden>
+    <section class="blk">
+      <div class="builder">
+        <div class="grid2">
+          <label class="f"><span>Activity</span><select id="qa_act"></select></label>
+          <label class="f"><span>Element</span><select id="qa_el"></select></label>
+        </div>
+        <div class="grid2" id="qa_otherWrap" style="display:none">
+          <label class="f" id="qa_actOtherWrap" style="display:none"><span>Activity name</span><input type="text" id="qa_actOther" placeholder="e.g. Kerb stone laying"></label>
+          <label class="f" id="qa_elOtherWrap" style="display:none"><span>Element name</span><input type="text" id="qa_elOther" placeholder="e.g. ramp"></label>
+        </div>
+        <fieldset><legend>Status</legend>
+          <div class="chips" id="qa_status">
+            <button type="button" data-v="commenced">Started</button><button type="button" data-v="in progress" class="on">In progress</button><button type="button" data-v="completed">Completed</button>
+          </div>
+        </fieldset>
+        <div class="grid2">
+          <label class="f" id="qa_gradeWrap"><span>Concrete grade</span><select id="qa_grade"><option>M10</option><option>M15</option><option>M20</option><option selected>M25</option><option>M30</option><option>M35</option><option>M40</option></select></label>
+          <label class="f"><span>Where</span><input type="text" id="qa_loc" placeholder="Floor, grid, block"></label>
+        </div>
+        <label class="f"><span>How much (optional)</span><input type="text" id="qa_qty" placeholder="34 cum, 8 nos, 60%"></label>
+        <details style="margin:0 0 8px"><summary style="cursor:pointer;color:var(--ink-2);font-size:15px">Checks done</summary>
+          <div class="chips multi" id="qa_qc" style="margin-top:8px">
+            <button type="button" data-v="Slump test conducted.">Slump test</button><button type="button" data-v="Cube samples cast.">Cubes cast</button><button type="button" data-v="Cover and lap length verified against drawings.">Cover and lap</button><button type="button" data-v="Line, level and plumb checked.">Line and level</button><button type="button" data-v="Alignment and dimensions verified.">Alignment</button><button type="button" data-v="Consultant inspection cleared.">Inspection cleared</button>
+          </div>
+        </details>
+        <div class="out empty" id="qa_out"></div>
+        <div class="go"><button class="ghost" type="button" id="qa_add">Add this line</button></div>
+      </div>
+      <h2>Or just say it</h2>
+      <div class="voice" id="voiceWork">
+        <button class="mic" type="button" data-mic="work">Tap and speak a line</button>
+        <div class="langs" data-langs><button type="button" data-lang="hi-IN">Hindi</button><button type="button" data-lang="en-IN">English</button></div>
+        <div class="live"></div>
+      </div>
+      <p class="hint" id="voiceHint">Speak one line at a time; it's added below as you said it. Polish wording turns Hindi or rough notes into formal English.</p>
+      <h2>Lines for today</h2>
+      <div class="rows" id="list-work"></div>
+      <button class="add" type="button" data-add="work">+ Write a line yourself</button>
+      <div class="tools" style="margin-top:10px"><button class="ghost" type="button" id="polishBtn2" style="display:none">Polish wording</button><p class="status" aria-live="polite"></p></div>
+      <input type="file" id="linePhotoInput" accept="image/*" capture="environment" style="display:none">
+    </section>
+  </section>
+
+  <!-- Step 3: Problems -->
+  <section class="step" data-step="3" hidden>
+    <section class="blk">
+      <h2>Tap anything that held work up</h2>
+      <div class="chips wrapissues" id="pick-issues"></div>
+      <p class="hint">Nothing today? Just tap Next.</p>
+      <div class="voice" id="voiceIssue" style="margin-top:10px">
+        <button class="mic" type="button" data-mic="issue">Tap and say the problem</button>
+        <div class="langs" data-langs><button type="button" data-lang="hi-IN">Hindi</button><button type="button" data-lang="en-IN">English</button></div>
+        <div class="live"></div>
+      </div>
+    </section>
+    <section class="blk" id="issuesBlk">
+      <h2>Today's problems</h2>
+      <div class="rows" id="list-issues"></div>
+      <button class="add" type="button" data-add="issues">+ Write one yourself</button>
+    </section>
+  </section>
+
+  <!-- Step 4: Report -->
+  <section class="step" data-step="4" hidden>
+    <section class="blk photoblock">
+      <h2>Photos (optional)</h2>
+      <div class="photos" id="photoGrid"></div>
+      <label class="ghost filebtn"><span id="photoLabel">Add photos</span><input type="file" id="photoInput" accept="image/*" multiple></label>
+      <p class="hint" id="photoHint">Up to 8, taken now or from the gallery. They go into the PDF with their captions.</p>
+    </section>
+
+    <details class="fold" id="moreFold">
+      <summary><span>More, if needed<small>Materials, equipment, remarks, tomorrow's plan, client, signatures</small></span></summary>
+      <div class="inner">
+        <h3>Materials received</h3>
+        <div class="strip" id="pick-materials"></div>
+        <div class="rows" id="list-materials"></div>
+        <button class="add" type="button" data-add="materials">+ Add material</button>
+        <h3>Equipment on site</h3>
+        <div class="strip" id="pick-equipment"></div>
+        <div class="rows" id="list-equipment"></div>
+        <button class="add" type="button" data-add="equipment">+ Add equipment</button>
+        <h3>Progress remarks</h3>
+        <div class="voice" id="voiceRemarks"><button class="mic" type="button" data-mic="remarks">Tap and speak</button><div class="langs" data-langs><button type="button" data-lang="hi-IN">Hindi</button><button type="button" data-lang="en-IN">English</button></div><div class="live"></div></div>
+        <div class="strip" id="pick-remarks"></div>
+        <textarea data-k="remarks" placeholder="Overall progress, quality, safety"></textarea>
+        <h3>Next-day plan</h3>
+        <div class="voice" id="voiceNext"><button class="mic" type="button" data-mic="nextDay">Tap and speak</button><div class="langs" data-langs><button type="button" data-lang="hi-IN">Hindi</button><button type="button" data-lang="en-IN">English</button></div><div class="live"></div></div>
+        <div class="strip" id="pick-nextDay"></div>
+        <textarea data-k="nextDay" placeholder="What starts or continues tomorrow"></textarea>
+        <h3>Report details</h3>
+        <div class="grid2">
+          <label class="f"><span>Client</span><input type="text" data-k="client" placeholder="Optional"></label>
+          <label class="f"><span>Report reference</span><input type="text" data-k="reportNo" placeholder="e.g. DPR/017"></label>
+        </div>
+        <div class="grid2">
+          <label class="f"><span>Your designation</span><input type="text" data-k="designation" placeholder="Site Engineer"></label>
+          <label class="f"><span>Working hours</span><input type="text" data-k="hours" placeholder="8:00 to 18:00"></label>
+        </div>
+        <label class="f"><span>Temperature, °C</span><input type="text" inputmode="numeric" data-k="temperature" placeholder="Optional"></label>
+        <h3>Signatures</h3>
+        <div class="grid3">
+          <label class="f"><span>Site Engineer</span><input type="text" data-k="sigEngineer" placeholder="Name"></label>
+          <label class="f"><span>Project Manager</span><input type="text" data-k="sigManager" placeholder="Name"></label>
+          <label class="f"><span>Client</span><input type="text" data-k="sigClient" placeholder="Name"></label>
+        </div>
+      </div>
+    </details>
+
+    <div class="tools">
+      <button class="ghost" type="button" id="shareBtn">Share</button>
+      <button class="ghost" type="button" id="printBtn">Print</button>
+      <button class="ghost" type="button" id="polishBtn">Polish wording</button>
+      <button class="ghost" type="button" id="undoBtn">Undo polish</button>
+      <p class="status" id="status" aria-live="polite"></p>
+    </div>
+    <h2 class="previewh" style="font-family:var(--head);font-weight:400;font-size:19px;margin:0 0 8px">Your report</h2>
+    <div class="paper" id="paper"></div>
+  </section>
+
+  <footer class="foot">SSR Site Log is built and maintained by SSR Group Civil, a construction management consultancy in Greater Noida West serving Delhi NCR. Everything you enter stays on this phone; only the PDF you download or share leaves it. ssrgroupcivil.in</footer>
+</main>
+
+<div class="bar"><div class="in">
+  <button class="ghost" type="button" id="backBtn">Back</button>
+  <button class="primary" type="button" id="nextBtn">Next</button>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+<script>
+/* buildDprPdf(jsPDF, r) -> jsPDF document. Pure: no DOM access. */
+function buildDprPdf(jsPDF, r){
+  var doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
+  var W = 210, H = 297, ML = 16, MR = 16, CW = W - ML - MR;
+  var NAVY = [15,42,74], GOLD = [201,162,39], INK = [20,33,58], GREY = [85,98,122], LINE = [211,215,223], SHADE = [244,245,248];
+  var SEV = { High: [178,58,58], Medium: [184,115,26], Low: [46,125,91] };
+  var y = 0, page = 1;
+  var company = (r.company || "").trim() || "Company name";
+  var title = "Daily Progress Report";
+  var DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  function fmtDate(s){ if (!s) return ""; var p = s.split("-").map(Number); var d = new Date(p[0], p[1]-1, p[2]); return DAYS[d.getDay()] + ", " + d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear(); }
+  function clean(s){ return String(s == null ? "" : s).replace(/\s+/g, " ").trim(); }
+  function C(c){ return c[0], c; }
+
+  function header(first){
+    if (first){
+      doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]); doc.rect(0, 0, W, 27, "F");
+      doc.setFillColor(GOLD[0],GOLD[1],GOLD[2]); doc.rect(0, 27, W, 1.2, "F");
+      doc.setFillColor(GOLD[0],GOLD[1],GOLD[2]); doc.rect(ML, 7, 1.4, 13, "F");
+      doc.setTextColor(255,255,255); doc.setFont("times","bold"); doc.setFontSize(17);
+      doc.text(company, ML + 5, 13);
+      doc.setFont("times","normal"); doc.setFontSize(11.5); doc.setTextColor(234,217,142);
+      doc.text(title, ML + 5, 19.5);
+      doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(201,209,224);
+      doc.text(fmtDate(r.date), W - MR, 12.5, { align: "right" });
+      if (clean(r.reportNo)) doc.text("Ref. " + clean(r.reportNo), W - MR, 17.5, { align: "right" });
+      y = 36;
+    } else {
+      doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]); doc.rect(0, 0, W, 10, "F");
+      doc.setFillColor(GOLD[0],GOLD[1],GOLD[2]); doc.rect(0, 10, W, 0.6, "F");
+      doc.setTextColor(255,255,255); doc.setFont("times","bold"); doc.setFontSize(9.5);
+      doc.text(company + "   " + title + (clean(r.project) ? "   " + clean(r.project) : ""), ML, 6.5);
+      doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(201,209,224);
+      doc.text(fmtDate(r.date), W - MR, 6.5, { align: "right" });
+      y = 19;
+    }
+  }
+  function footer(){
+    doc.setDrawColor(LINE[0],LINE[1],LINE[2]); doc.setLineWidth(0.2); doc.line(ML, H - 14, W - MR, H - 14);
+    doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(GREY[0],GREY[1],GREY[2]);
+    doc.text("Generated with SSR Site Log, a free tool by SSR Group Civil (ssrgroupcivil.in)", ML, H - 9.5);
+    doc.text("Page " + page + " of {total_pages_count_string}", W - MR, H - 9.5, { align: "right" });
+  }
+  function ensure(h){ if (y + h > H - 20){ footer(); doc.addPage(); page++; header(false); } }
+
+  function details(){
+    var cells = [
+      ["Project", clean(r.project) || "-"], ["Client", clean(r.client) || "-"],
+      ["Location", clean(r.location) || "-"], ["Prepared by", clean(r.preparedBy) ? clean(r.preparedBy) + (clean(r.designation) ? ", " + clean(r.designation) : "") : "-"]
+    ];
+    var colW = CW / 2, rowH = 11;
+    for (var i = 0; i < cells.length; i++){
+      var col = i % 2, row = Math.floor(i / 2);
+      var x = ML + col * colW, yy = y + row * rowH;
+      doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(GREY[0],GREY[1],GREY[2]);
+      doc.text(cells[i][0], x, yy);
+      doc.setFontSize(10.5); doc.setTextColor(INK[0],INK[1],INK[2]);
+      var lines = doc.splitTextToSize(cells[i][1], colW - 6);
+      doc.text(lines[0] + (lines.length > 1 ? " ..." : ""), x, yy + 4.6);
+    }
+    y += rowH * 2 + 1;
+    doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.5); doc.line(ML, y, W - MR, y);
+    y += 8;
+  }
+
+  function section(n, t){
+    ensure(26);
+    doc.setFont("times","bold"); doc.setFontSize(11.5); doc.setTextColor(NAVY[0],NAVY[1],NAVY[2]);
+    doc.text(n + ". " + t, ML, y);
+    doc.setDrawColor(LINE[0],LINE[1],LINE[2]); doc.setLineWidth(0.25); doc.line(ML, y + 1.8, W - MR, y + 1.8);
+    y += 7.5;
+  }
+  function para(text, opts){
+    opts = opts || {};
+    var size = opts.size || 10, lh = size * 0.5, color = opts.color || INK;
+    doc.setFont("helvetica", opts.style || "normal"); doc.setFontSize(size); doc.setTextColor(color[0],color[1],color[2]);
+    var lines = doc.splitTextToSize(clean(text) || "Nil reported.", CW - (opts.indent || 0));
+    for (var i = 0; i < lines.length; i++){ ensure(lh + 1); doc.setFont("helvetica", opts.style || "normal"); doc.setFontSize(size); doc.setTextColor(color[0],color[1],color[2]); doc.text(lines[i], ML + (opts.indent || 0), y); y += lh; }
+    y += 3;
+  }
+  function numbered(items, sub){
+    if (!items.length){ para("Nil reported."); return; }
+    for (var i = 0; i < items.length; i++){
+      var it = items[i];
+      doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(INK[0],INK[1],INK[2]);
+      var lines = doc.splitTextToSize(it.text, CW - 8);
+      var subLines = it.sub ? doc.splitTextToSize(it.sub, CW - 8) : [];
+      ensure(lines.length * 5 + subLines.length * 4.4 + 2);
+      doc.setFontSize(10); doc.setTextColor(INK[0],INK[1],INK[2]);
+      doc.setFont("helvetica","bold"); doc.text((i + 1) + ".", ML, y);
+      doc.setFont("helvetica","normal");
+      for (var j = 0; j < lines.length; j++){ doc.text(lines[j], ML + 8, y); y += 5; }
+      if (subLines.length){ doc.setFontSize(9); doc.setTextColor(GREY[0],GREY[1],GREY[2]); for (var k = 0; k < subLines.length; k++){ doc.text(subLines[k], ML + 8, y - 0.8); y += 4.4; } }
+      y += 1.6;
+    }
+    y += 2;
+  }
+  function table(cols, rows, opts){
+    opts = opts || {};
+    if (!rows.length){ para("Nil reported."); return; }
+    var totalW = 0; cols.forEach(function(c){ totalW += c.w; });
+    var scale = CW / totalW; cols.forEach(function(c){ c.w *= scale; });
+    function head(){
+      ensure(8);
+      doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]); doc.rect(ML, y - 4.6, CW, 6.8, "F");
+      doc.setFont("helvetica","bold"); doc.setFontSize(9); doc.setTextColor(255,255,255);
+      var x = ML; cols.forEach(function(c){ doc.text(c.t, c.align === "right" ? x + c.w - 2 : x + 2, y, { align: c.align === "right" ? "right" : "left" }); x += c.w; });
+      y += 6.5;
+    }
+    // keep the header with its first row
+    doc.setFont("helvetica","normal"); doc.setFontSize(9.5);
+    var firstLines = 1; for (var c0 = 0; c0 < cols.length; c0++){ var l0 = doc.splitTextToSize(clean(rows[0][c0]) || "-", cols[c0].w - 4).length; if (l0 > firstLines) firstLines = l0; }
+    ensure(8 + firstLines * 4.4 + 3);
+    head();
+    doc.setFont("helvetica","normal"); doc.setFontSize(9.5);
+    for (var i = 0; i < rows.length; i++){
+      var row = rows[i], cells = [], maxLines = 1;
+      for (var c = 0; c < cols.length; c++){ var ls = doc.splitTextToSize(clean(row[c]) || "-", cols[c].w - 4); cells.push(ls); if (ls.length > maxLines) maxLines = ls.length; }
+      var rh = maxLines * 4.4 + 3;
+      if (y + rh > H - 20){ footer(); doc.addPage(); page++; header(false); head(); doc.setFont("helvetica","normal"); doc.setFontSize(9.5); }
+      var isTotal = opts.totalRow && i === rows.length - 1;
+      if (i % 2 === 1 && !isTotal){ doc.setFillColor(SHADE[0],SHADE[1],SHADE[2]); doc.rect(ML, y - 4.2, CW, rh, "F"); }
+      var x = ML;
+      for (c = 0; c < cols.length; c++){
+        var color = INK;
+        if (cols[c].sev && SEV[clean(row[c])]) color = SEV[clean(row[c])];
+        doc.setTextColor(color[0],color[1],color[2]);
+        doc.setFont("helvetica", (isTotal || (cols[c].sev && SEV[clean(row[c])])) ? "bold" : "normal");
+        for (var l = 0; l < cells[c].length; l++){
+          doc.text(cells[c][l], cols[c].align === "right" ? x + cols[c].w - 2 : x + 2, y + l * 4.4, { align: cols[c].align === "right" ? "right" : "left" });
+        }
+        x += cols[c].w;
+      }
+      doc.setDrawColor(LINE[0],LINE[1],LINE[2]); doc.setLineWidth(0.15); doc.line(ML, y - 4.2 + rh, W - MR, y - 4.2 + rh);
+      y += rh;
+    }
+    y += 5;
+  }
+  function signatures(){
+    ensure(34);
+    y += 8;
+    var colW = CW / 3, roles = [["Prepared by", "Site Engineer", clean(r.sigEngineer) || clean(r.preparedBy)], ["Reviewed by", "Project Manager", clean(r.sigManager)], ["Acknowledged by", "Client / Consultant", clean(r.sigClient)]];
+    for (var i = 0; i < 3; i++){
+      var x = ML + i * colW;
+      doc.setDrawColor(INK[0],INK[1],INK[2]); doc.setLineWidth(0.3); doc.line(x, y, x + colW - 8, y);
+      doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(GREY[0],GREY[1],GREY[2]); doc.text(roles[i][0], x, y + 4.5);
+      doc.setFontSize(10); doc.setTextColor(INK[0],INK[1],INK[2]); doc.text(roles[i][2] || roles[i][1], x, y + 9.5);
+      if (roles[i][2]){ doc.setFontSize(8.5); doc.setTextColor(GREY[0],GREY[1],GREY[2]); doc.text(roles[i][1], x, y + 13.5); }
+    }
+    y += 18;
+  }
+
+  header(true);
+  details();
+
+  section(1, "Weather");
+  para((clean(r.weather) || "Not recorded") + (clean(r.temperature) ? ", " + clean(r.temperature) + " \u00B0C" : "") + (clean(r.hours) ? ". Working hours " + clean(r.hours) : ""));
+
+  section(2, "Manpower");
+  var mp = (r.manpower || []).filter(function(m){ return clean(m.trade) && Number(m.count) > 0; });
+  var total = 0; mp.forEach(function(m){ total += Number(m.count); });
+  table([{ t: "Trade", w: 3 }, { t: "Nos", w: 1, align: "right" }], mp.map(function(m){ return [m.trade, String(Number(m.count))]; }).concat(mp.length ? [["Total manpower", String(total)]] : []), { totalRow: true });
+
+  section(3, "Work Executed");
+  numbered((r.work || []).filter(function(w){ return clean(w.desc); }).map(function(w){ var s = []; if (clean(w.location)) s.push(clean(w.location)); if (clean(w.qty)) s.push(clean(w.qty)); return { text: clean(w.desc), sub: s.join("  |  ") }; }));
+
+  section(4, "Materials Received");
+  table([{ t: "Item", w: 3 }, { t: "Quantity", w: 1.4 }, { t: "Supplier / Remarks", w: 2.2 }], (r.materials || []).filter(function(m){ return clean(m.item); }).map(function(m){ return [m.item, m.qty, m.supplier]; }));
+
+  section(5, "Equipment on Site");
+  table([{ t: "Equipment", w: 3 }, { t: "Nos", w: 1, align: "right" }, { t: "Status", w: 1.6 }], (r.equipment || []).filter(function(e){ return clean(e.name); }).map(function(e){ return [e.name, e.nos, e.status]; }));
+
+  section(6, "Risks and Issues");
+  table([{ t: "Severity", w: 1.1, sev: true }, { t: "Description", w: 3.4 }, { t: "Action taken / required", w: 2.3 }], (r.issues || []).filter(function(i){ return clean(i.desc); }).map(function(i){ return [i.severity || "Low", i.desc, i.action]; }));
+
+  section(7, "Progress Remarks");
+  para(r.remarks);
+
+  section(8, "Next-Day Plan");
+  para(r.nextDay);
+
+  var photos = (r._photos || []).filter(function(p){ return p && p.data; });
+  if (photos.length){
+    var gap = 6, boxW = (CW - gap) / 2, boxH = 62;
+    ensure(boxH + 30);
+    section(9, "Site Photographs");
+    for (var pi = 0; pi < photos.length; pi += 2){
+      ensure(boxH + 14);
+      for (var pj = 0; pj < 2 && pi + pj < photos.length; pj++){
+        var ph = photos[pi + pj], x0 = ML + pj * (boxW + gap);
+        var ar = (ph.w && ph.h) ? ph.w / ph.h : 4 / 3, dw = boxW, dh = boxW / ar;
+        if (dh > boxH){ dh = boxH; dw = boxH * ar; }
+        doc.setFillColor(SHADE[0],SHADE[1],SHADE[2]); doc.rect(x0, y - 3, boxW, boxH, "F");
+        try { doc.addImage(ph.data, "JPEG", x0 + (boxW - dw) / 2, y - 3 + (boxH - dh) / 2, dw, dh); } catch (e) {}
+        doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(GREY[0],GREY[1],GREY[2]);
+        var cap = doc.splitTextToSize(clean(ph.caption) || ("Photograph " + (pi + pj + 1)), boxW);
+        doc.text(cap.slice(0, 2), x0, y + boxH + 1);
+      }
+      y += boxH + 12;
+    }
+    y += 2;
+  }
+
+  signatures();
+  footer();
+  doc.putTotalPages("{total_pages_count_string}");
+  return doc;
+}
+
+</script>
+<script>
+(function(){
+  /* ===== Self-hosting settings. Leave both blank when this page runs inside claude.ai. =====
+     POLISH_ENDPOINT: the URL of your deployed polish worker, e.g. "https://ssr-polish.yourname.workers.dev"
+     APP_TOKEN: must match the APP_TOKEN secret set on the worker (leave blank if the worker has none) */
+  var POLISH_ENDPOINT = "";
+  var APP_TOKEN = "";
+
+  var $ = function(s, el){ return (el || document).querySelector(s); };
+  var $$ = function(s, el){ return Array.prototype.slice.call((el || document).querySelectorAll(s)); };
+  var haveClaude = !!(window.claude && typeof window.claude.use === "function");
+  var sampleNs = null, polishBackup = null, step = 1;
+  var photoData = {}, hasIdb = typeof indexedDB !== "undefined", MAX_PHOTOS = 8;
+  var STEPS = [null, ["Today", "Date, weather and who was on site."], ["Work done", "Pick the activity and element; the line is written for you."], ["Problems", "Anything that held work up today."], ["Report", "Check it, add photos if you like, then download or share."]];
+
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function pad(n){ return String(n).padStart(2, "0"); }
+  function iso(d){ return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function todayISO(){ return iso(new Date()); }
+  function fromISO(s){ var p = (s || todayISO()).split("-").map(Number); return new Date(p[0], p[1] - 1, p[2]); }
+  function fmtDate(s){ if (!s) return ""; return fromISO(s).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" }); }
+  function fmtShort(s){ if (!s) return ""; return fromISO(s).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }); }
+  function clean(s){ return String(s == null ? "" : s).replace(/\s+/g, " ").trim(); }
+  function esc(s){ return clean(s).replace(/[&<>"]/g, function(c){ return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function slug(s){ return clean(s).replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "site"; }
+  function lsGet(k){ try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function setStatus(m){ $$(".status").forEach(function(el){ el.textContent = m || ""; }); }
+  function debounce(fn, ms){ var t; return function(){ clearTimeout(t); t = setTimeout(fn, ms); }; }
+
+  function blank(){ return {
+    id: uid(), company: "", project: "", location: "", client: "", date: todayISO(), reportNo: "", preparedBy: "", designation: "",
+    weather: "Clear", temperature: "", hours: "",
+    manpower: [{ trade: "Mason", count: "" }, { trade: "Helper", count: "" }, { trade: "Bar bender", count: "" }, { trade: "Carpenter", count: "" }, { trade: "Electrician", count: "" }, { trade: "Plumber", count: "" }, { trade: "Painter", count: "" }, { trade: "Others", count: "" }],
+    work: [{ desc: "", location: "", qty: "", rid: uid() }], materials: [{ item: "", qty: "", supplier: "" }], equipment: [{ name: "", nos: "", status: "Working" }], issues: [{ severity: "Low", desc: "", action: "" }],
+    remarks: "", nextDay: "", sigEngineer: "", sigManager: "", sigClient: "", photos: []
+  }; }
+  var r = lsGet("ssrdpr.draft") || blank();
+  if (!r.id) r.id = uid(); if (!r.photos) r.photos = [];
+  function migrate(){ (r.work || []).forEach(function(w){ if (!w.rid) w.rid = uid(); }); }
+  migrate();
+
+  /* ---------- steps ---------- */
+  function showStep(n){
+    step = n;
+    $$(".step").forEach(function(s){ s.hidden = s.getAttribute("data-step") !== String(n); });
+    $("#stepLabel").textContent = "Step " + n + " of 4: " + STEPS[n][0];
+    $("#stepLead").textContent = STEPS[n][1];
+    $("#dots").innerHTML = ""; for (var i = 1; i <= 4; i++){ var d = document.createElement("i"); if (i < n) d.className = "done"; if (i === n) d.className = "on"; $("#dots").appendChild(d); }
+    $("#backBtn").style.visibility = n === 1 ? "hidden" : "visible";
+    $("#nextBtn").textContent = n === 4 ? "Download PDF" : "Next";
+    if (n === 4) renderPreview();
+    window.scrollTo({ top: 0 });
+  }
+  $("#backBtn").addEventListener("click", function(){ if (step > 1) showStep(step - 1); });
+  $("#nextBtn").addEventListener("click", function(){ if (step < 4) showStep(step + 1); else downloadPdf(); });
+
+  /* ---------- simple fields ---------- */
+  function bindSimple(){
+    $$("[data-k]").forEach(function(el){ var k = el.getAttribute("data-k"); el.value = r[k] == null ? "" : r[k]; el.oninput = function(){ r[k] = el.value; changed(); }; });
+    renderChips(); updateDetailsSummary();
+  }
+  function renderChips(){ $$("#weatherChips button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-v") === r.weather); }); }
+  $$("#weatherChips button").forEach(function(b){ b.addEventListener("click", function(){ r.weather = b.getAttribute("data-v"); renderChips(); changed(); }); });
+  function updateDetailsSummary(){
+    var has = clean(r.company) || clean(r.project);
+    $("#detailsTitle").textContent = has ? [clean(r.company), clean(r.project)].filter(Boolean).join(", ") : "Letterhead";
+    $("#detailsSub").textContent = has ? "Tap to change" : "Company, project and your name, remembered for next time";
+    if (!has) $("#detailsFold").open = true;
+  }
+
+  /* ---------- repeatable lists ---------- */
+  var LISTS = {
+    manpower: { blank: function(){ return { trade: "", count: "" }; }, render: function(row){ return '<div class="row mp"><input type="text" data-f="trade" placeholder="Trade" value="' + esc(row.trade) + '"><input type="number" min="0" inputmode="numeric" data-f="count" placeholder="0" value="' + esc(row.count) + '"><button type="button" class="x" data-rm aria-label="Remove">&times;</button></div>'; } },
+    work: { blank: function(){ return { desc: "", location: "", qty: "", rid: uid() }; }, render: function(row){ var n = (r.photos || []).filter(function(p){ return p.rid && p.rid === row.rid; }).length; return '<div class="row work"><textarea data-f="desc" placeholder="What was done">' + esc(row.desc) + '</textarea><div class="sub"><input type="text" data-f="location" placeholder="Where" value="' + esc(row.location) + '"><input type="text" data-f="qty" placeholder="How much" value="' + esc(row.qty) + '"></div>' + (hasIdb ? '<button type="button" class="ph' + (n ? ' has' : '') + '" data-ph>' + (n ? 'Photo added (' + n + '), add another' : 'Add a photo of this') + '</button>' : '') + '<button type="button" class="x" data-rm aria-label="Remove">&times;</button></div>'; } },
+    materials: { blank: function(){ return { item: "", qty: "", supplier: "" }; }, render: function(row){ return '<div class="row tri"><div class="sub3"><input type="text" data-f="item" placeholder="Item" value="' + esc(row.item) + '"><input type="text" data-f="qty" placeholder="Qty" value="' + esc(row.qty) + '"><input type="text" data-f="supplier" placeholder="Supplier" value="' + esc(row.supplier) + '"></div><button type="button" class="x" data-rm aria-label="Remove">&times;</button></div>'; } },
+    equipment: { blank: function(){ return { name: "", nos: "", status: "Working" }; }, render: function(row){ var opts = ["Working", "Idle", "Breakdown", "Under maintenance"].map(function(o){ return '<option' + (o === row.status ? " selected" : "") + '>' + o + '</option>'; }).join(""); return '<div class="row tri"><div class="sub3"><input type="text" data-f="name" placeholder="Equipment" value="' + esc(row.name) + '"><input type="text" data-f="nos" inputmode="numeric" placeholder="Nos" value="' + esc(row.nos) + '"><select data-f="status">' + opts + '</select></div><button type="button" class="x" data-rm aria-label="Remove">&times;</button></div>'; } },
+    issues: { blank: function(){ return { severity: "Low", desc: "", action: "" }; }, render: function(row){ var opts = ["Low", "Medium", "High"].map(function(o){ return '<option' + (o === row.severity ? " selected" : "") + '>' + o + '</option>'; }).join(""); return '<div class="row work"><textarea data-f="desc" placeholder="What happened">' + esc(row.desc) + '</textarea><div class="sub"><select data-f="severity">' + opts + '</select><input type="text" data-f="action" placeholder="What was done about it" value="' + esc(row.action) + '"></div><button type="button" class="x" data-rm aria-label="Remove">&times;</button></div>'; } }
+  };
+  function renderList(name){
+    var box = $("#list-" + name); box.innerHTML = "";
+    (r[name] || []).forEach(function(row, i){
+      var wrap = document.createElement("div"); wrap.innerHTML = LISTS[name].render(row); var el = wrap.firstChild;
+      $$("[data-f]", el).forEach(function(inp){ inp.addEventListener("input", function(){ r[name][i][inp.getAttribute("data-f")] = inp.value; changed(); }); });
+      $("[data-rm]", el).addEventListener("click", function(){ r[name].splice(i, 1); if (!r[name].length) r[name].push(LISTS[name].blank()); renderList(name); changed(); });
+      var phb = $("[data-ph]", el); if (phb) phb.addEventListener("click", function(){ pendingRid = row.rid; $("#linePhotoInput").click(); });
+      box.appendChild(el);
+    });
+    if (name === "issues") $("#issuesBlk").style.display = r.issues.some(function(i){ return clean(i.desc); }) ? "" : "none";
+  }
+  function renderAllLists(){ Object.keys(LISTS).forEach(renderList); }
+  $$("[data-add]").forEach(function(b){ b.addEventListener("click", function(){ var n = b.getAttribute("data-add"); r[n].push(LISTS[n].blank()); if (n === "issues") $("#issuesBlk").style.display = ""; renderList(n); if (n === "issues") $("#issuesBlk").style.display = ""; var last = $("#list-" + n).lastChild; var f = last && $("[data-f]", last); if (f) f.focus(); changed(); }); });
+
+  /* ---------- same as last report ---------- */
+  $("#sameBtn").addEventListener("click", function(){
+    var list = savedList().filter(function(e){ return clean(e.r.project).toLowerCase() === clean(r.project).toLowerCase() && e.id !== r.id; });
+    if (!list.length) list = savedList().filter(function(e){ return e.id !== r.id; });
+    if (!list.length){ setStatus(""); alert("No earlier report saved on this phone yet. Download one first, and this button will copy its manpower and equipment."); return; }
+    var src = list[0].r;
+    r.manpower = JSON.parse(JSON.stringify(src.manpower || r.manpower)); r.equipment = JSON.parse(JSON.stringify(src.equipment || r.equipment));
+    renderList("manpower"); renderList("equipment"); changed();
+  });
+
+  /* ---------- line builder ---------- */
+  var ACT = [
+    { k: "conc", l: "Concreting", b: "Concreting of {el}", g: true }, { k: "reinf", l: "Reinforcement fixing", b: "Reinforcement fixing for {el}" }, { k: "form", l: "Formwork / shuttering", b: "Formwork for {el}" }, { k: "deshut", l: "De-shuttering", b: "De-shuttering of {el}" }, { k: "cure", l: "Curing", b: "Curing of {el}" },
+    { k: "exc", l: "Excavation", b: "Excavation for {el}" }, { k: "pcc", l: "PCC", b: "PCC below {el}", g: true }, { k: "backfill", l: "Backfilling", b: "Backfilling around {el}" }, { k: "brick", l: "Brickwork", b: "Brickwork in {el}" }, { k: "block", l: "AAC block work", b: "AAC block masonry in {el}" },
+    { k: "plaster", l: "Plastering", b: "Plastering of {el}" }, { k: "wp", l: "Waterproofing", b: "Waterproofing treatment of {el}" }, { k: "floor", l: "Flooring / tiling", b: "Flooring and tiling in {el}" }, { k: "plumb", l: "Plumbing rough-in", b: "Plumbing and sanitary rough-in for {el}" }, { k: "elec", l: "Electrical conduiting", b: "Electrical conduiting for {el}" },
+    { k: "ffp", l: "Fire-fighting pipework", b: "Fire-fighting pipework for {el}" }, { k: "fd", l: "Fire detection wiring", b: "Fire detection and alarm wiring for {el}" }, { k: "paint", l: "Painting", b: "Painting of {el}" }, { k: "termite", l: "Anti-termite treatment", b: "Anti-termite treatment for {el}" }, { k: "scaff", l: "Scaffolding", b: "Scaffolding for {el}" },
+    { k: "layout", l: "Layout / survey", b: "Layout marking and level setting for {el}" }, { k: "cube", l: "Cube casting", b: "Casting of cube samples for {el} concrete", noStatus: true }, { k: "other", l: "Other (type it)", b: "{other} for {el}" }
+  ];
+  var ELS = ["footings","raft","plinth beams","columns","beams","slab","staircase","shear walls","lift core","retaining wall","underground tank","overhead tank","external walls","internal walls","partition walls","parapet","ceiling","floors","toilet blocks","boundary wall","road and pavement","other (type it)"];
+  var qa = { act: "conc", el: "slab", st: "in progress", qc: [] };
+  function cap(t){ return t.charAt(0).toUpperCase() + t.slice(1); }
+  function actDef(){ for (var i = 0; i < ACT.length; i++) if (ACT[i].k === qa.act) return ACT[i]; return ACT[0]; }
+  function elText(){ return qa.el === "other (type it)" ? clean($("#qa_elOther").value).toLowerCase() : qa.el; }
+  function composeLine(){
+    var A = actDef(), el = elText(), other = clean($("#qa_actOther").value);
+    if (!el || (A.k === "other" && !other)) return "";
+    var t = cap(A.b.replace("{el}", el).replace("{other}", other ? cap(other) : ""));
+    if (!A.noStatus) t += " " + qa.st;
+    if (A.g) t += " in " + $("#qa_grade").value + " grade concrete";
+    t += "."; if (qa.qc.length) t += " " + qa.qc.join(" ");
+    return t;
+  }
+  function nextDayLine(w){
+    var m = w.meta; if (!m) return ""; var A = null; for (var i = 0; i < ACT.length; i++) if (ACT[i].k === m.a) A = ACT[i]; if (!A) return "";
+    if (m.st === "completed") return A.g ? "Curing of " + m.el + " to continue." : "";
+    return cap(A.b.replace("{el}", m.el).replace("{other}", m.other ? cap(m.other) : "")) + " to continue.";
+  }
+  function refreshBuilder(){
+    var A = actDef(); $("#qa_gradeWrap").style.display = A.g ? "" : "none";
+    var oa = A.k === "other", oe = qa.el === "other (type it)";
+    $("#qa_actOtherWrap").style.display = oa ? "" : "none"; $("#qa_elOtherWrap").style.display = oe ? "" : "none"; $("#qa_otherWrap").style.display = (oa || oe) ? "" : "none";
+    $$("#qa_status button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-v") === qa.st); });
+    $("#qa_status").parentNode.style.display = A.noStatus ? "none" : "";
+    var line = composeLine(), out = $("#qa_out"); out.textContent = line || "Choose an activity and element to see the line."; out.classList.toggle("empty", !line);
+  }
+  (function initBuilder(){
+    var sa = $("#qa_act"), se = $("#qa_el");
+    ACT.forEach(function(a){ var o = document.createElement("option"); o.value = a.k; o.textContent = a.l; sa.appendChild(o); });
+    ELS.forEach(function(e){ var o = document.createElement("option"); o.value = e; o.textContent = cap(e); se.appendChild(o); });
+    sa.value = qa.act; se.value = qa.el;
+    sa.addEventListener("change", function(){ qa.act = sa.value; refreshBuilder(); }); se.addEventListener("change", function(){ qa.el = se.value; refreshBuilder(); });
+    ["#qa_actOther", "#qa_elOther", "#qa_grade"].forEach(function(id){ $(id).addEventListener("input", refreshBuilder); $(id).addEventListener("change", refreshBuilder); });
+    $$("#qa_status button").forEach(function(b){ b.addEventListener("click", function(){ qa.st = b.getAttribute("data-v"); refreshBuilder(); }); });
+    $$("#qa_qc button").forEach(function(b){ b.addEventListener("click", function(){ var v = b.getAttribute("data-v"), i = qa.qc.indexOf(v); if (i >= 0) qa.qc.splice(i, 1); else qa.qc.push(v); b.classList.toggle("on", i < 0); refreshBuilder(); }); });
+    $("#qa_add").addEventListener("click", function(){
+      var line = composeLine(); if (!line){ refreshBuilder(); (qa.el === "other (type it)" ? $("#qa_elOther") : $("#qa_actOther")).focus(); return; }
+      var row = { desc: line, location: clean($("#qa_loc").value), qty: clean($("#qa_qty").value), rid: uid(), meta: { a: qa.act, el: elText(), st: qa.st, other: clean($("#qa_actOther").value) } };
+      if (r.work.length === 1 && !clean(r.work[0].desc) && !clean(r.work[0].location) && !clean(r.work[0].qty)) r.work[0] = row; else r.work.push(row);
+      renderList("work"); changed();
+      $("#qa_qty").value = ""; $("#qa_loc").value = ""; qa.qc = []; $$("#qa_qc button").forEach(function(b){ b.classList.remove("on"); }); refreshBuilder();
+      $("#list-work").lastChild.scrollIntoView({ block: "nearest" });
+    });
+    refreshBuilder();
+  })();
+
+  /* ---------- quick picks ---------- */
+  var PICKS = {
+    materials: ["OPC 43 cement","OPC 53 cement","PPC cement","TMT bars Fe500D 8 mm","TMT bars Fe500D 10 mm","TMT bars Fe500D 12 mm","TMT bars Fe500D 16 mm","TMT bars Fe500D 20 mm","RMC M25","RMC M30","Bricks","AAC blocks","River sand","M-sand","Aggregate 10 mm","Aggregate 20 mm","Binding wire","Shuttering plywood","Admixture","Tiles","Waterproofing compound","Fire-fighting pipes","Electrical conduits"],
+    equipment: ["Concrete mixer","Transit mixer","Concrete pump","Needle vibrator","Builder hoist","Tower crane","JCB","Excavator","Bar bending machine","Bar cutting machine","Water pump","DG set","Welding machine","Total station","Scaffolding"],
+    issues: [
+      { l: "Material delay", severity: "Medium", desc: "Delivery of material delayed; dependent activity held up.", action: "Supplier followed up for revised delivery." },
+      { l: "Labour shortage", severity: "Medium", desc: "Shortfall in labour strength against the day's requirement.", action: "Contractor instructed to augment manpower." },
+      { l: "Rain", severity: "Medium", desc: "Work stopped due to rain.", action: "Exposed work covered; activity rescheduled." },
+      { l: "Equipment breakdown", severity: "High", desc: "Equipment breakdown affected work progress.", action: "Repair arranged; standby equipment requested." },
+      { l: "Drawing awaited", severity: "High", desc: "Drawing or detail awaited from the consultant; work held.", action: "Escalated to the consultant for issue of the drawing." },
+      { l: "Client decision pending", severity: "Medium", desc: "Client decision pending; work held.", action: "Escalated to the client for a decision." },
+      { l: "Power failure", severity: "Low", desc: "Power supply interruption affected work.", action: "Alternative power arranged." },
+      { l: "Water shortage", severity: "Low", desc: "Water supply shortage affected curing and masonry.", action: "Tanker supply arranged." },
+      { l: "Safety observation", severity: "High", desc: "Safety non-compliance observed at site.", action: "Work stopped until rectified; toolbox talk conducted." },
+      { l: "Access constraint", severity: "Low", desc: "Site access or working space constrained.", action: "Coordinated with adjoining works." },
+      { l: "Rework / NC", severity: "High", desc: "Non-conformance observed; rework required.", action: "NCR raised; rectification instructed." }
+    ],
+    remarks: ["Progress is in line with the approved programme.","Progress is behind programme due to the hindrances noted above.","Quality checks were satisfactory; no non-conformance recorded.","Safety briefing conducted; PPE compliance verified.","Housekeeping maintained across work areas.","Site instructions issued to the contractor as noted."],
+    nextDay: ["Curing of completed concrete to continue.","Material receipt and inspection as scheduled.","Consultant inspection requested for completed work.","Manpower to be augmented as required."]
+  };
+  function addPick(list, row){
+    var b = LISTS[list].blank(), first = r[list][0], keys = Object.keys(b), empty = r[list].length === 1 && keys.every(function(k){ return String(first[k] || "") === String(b[k] || ""); });
+    if (empty) r[list][0] = row; else r[list].push(row);
+    renderList(list); changed();
+    var rows = $("#list-" + list).children, last = rows[empty ? 0 : rows.length - 1], f = last && $$("[data-f]", last)[1]; if (f && list !== "issues") f.focus();
+  }
+  function appendText(k, t){ var cur = clean(r[k]); r[k] = cur ? (cur + " " + t) : t; $("[data-k=" + k + "]").value = r[k]; changed(); }
+  function pickBtn(label, cls, fn){ var b = document.createElement("button"); b.type = "button"; b.className = "pick" + (cls ? " " + cls : ""); b.textContent = label; b.addEventListener("click", fn); return b; }
+  PICKS.materials.forEach(function(m){ $("#pick-materials").appendChild(pickBtn(m, "", function(){ addPick("materials", { item: m, qty: "", supplier: "" }); })); });
+  PICKS.equipment.forEach(function(e){ $("#pick-equipment").appendChild(pickBtn(e, "", function(){ addPick("equipment", { name: e, nos: "1", status: "Working" }); })); });
+  PICKS.issues.forEach(function(i){ $("#pick-issues").appendChild(pickBtn(i.l, "sev-" + i.severity, function(){ addPick("issues", { severity: i.severity, desc: i.desc, action: i.action }); $("#issuesBlk").scrollIntoView({ block: "nearest" }); })); });
+  PICKS.remarks.forEach(function(t){ $("#pick-remarks").appendChild(pickBtn(t.replace(/\.$/, ""), "", function(){ appendText("remarks", t); })); });
+  $("#pick-nextDay").appendChild(pickBtn("Suggest from today's work", "", function(){
+    var lines = []; r.work.forEach(function(w){ var t = nextDayLine(w); if (t && lines.indexOf(t) < 0) lines.push(t); });
+    if (!lines.length){ setStatus("Suggestions come from builder lines still in progress; none found."); return; }
+    appendText("nextDay", lines.join(" "));
+  }));
+  PICKS.nextDay.forEach(function(t){ $("#pick-nextDay").appendChild(pickBtn(t.replace(/\.$/, ""), "", function(){ appendText("nextDay", t); })); });
+
+  /* ---------- photos (stored in the browser's IndexedDB, never uploaded) ---------- */
+  var pendingRid = null;
+  var idb = { db: null,
+    open: function(){ return new Promise(function(res, rej){ if (idb.db) return res(idb.db); var q = indexedDB.open("ssrdpr", 1); q.onupgradeneeded = function(){ q.result.createObjectStore("photos"); }; q.onsuccess = function(){ idb.db = q.result; res(idb.db); }; q.onerror = function(){ rej(q.error); }; }); },
+    put: function(id, v){ return idb.open().then(function(db){ return new Promise(function(res, rej){ var t = db.transaction("photos", "readwrite"); t.objectStore("photos").put(v, id); t.oncomplete = res; t.onerror = function(){ rej(t.error); }; }); }); },
+    get: function(id){ return idb.open().then(function(db){ return new Promise(function(res, rej){ var q = db.transaction("photos").objectStore("photos").get(id); q.onsuccess = function(){ res(q.result || null); }; q.onerror = function(){ rej(q.error); }; }); }); },
+    del: function(id){ return idb.open().then(function(db){ return new Promise(function(res){ var t = db.transaction("photos", "readwrite"); t.objectStore("photos").delete(id); t.oncomplete = res; t.onerror = res; }); }); }
+  };
+  function compressImage(file){ return new Promise(function(res, rej){ var img = new Image(), url = URL.createObjectURL(file); img.onload = function(){ var max = 1200, s = Math.min(1, max / Math.max(img.width, img.height)); var c = document.createElement("canvas"); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url); res({ data: c.toDataURL("image/jpeg", 0.72), w: c.width, h: c.height }); }; img.onerror = function(){ URL.revokeObjectURL(url); rej(new Error("bad image")); }; img.src = url; }); }
+  function loadPhotos(){ if (!hasIdb) return Promise.resolve(); return Promise.all((r.photos || []).map(function(p){ return idb.get(p.id).then(function(d){ if (d) photoData[p.id] = d; }).catch(function(){}); })).then(renderPhotos); }
+  function renderPhotos(){
+    var g = $("#photoGrid"); g.innerHTML = "";
+    (r.photos || []).forEach(function(p, i){
+      var d = photoData[p.id]; if (!d) return;
+      var box = document.createElement("div"); box.className = "photo";
+      var img = document.createElement("img"); img.src = d.data; img.alt = ""; box.appendChild(img);
+      var cap = document.createElement("input"); cap.type = "text"; cap.placeholder = "Caption"; cap.value = p.caption || ""; cap.addEventListener("input", function(){ r.photos[i].caption = cap.value; changed(); }); box.appendChild(cap);
+      var rm = document.createElement("button"); rm.type = "button"; rm.className = "rm"; rm.textContent = "Remove"; rm.addEventListener("click", function(){ idb.del(p.id); delete photoData[p.id]; r.photos.splice(i, 1); renderPhotos(); renderList("work"); changed(); }); box.appendChild(rm);
+      g.appendChild(box);
+    });
+    $("#photoLabel").textContent = r.photos.length ? "Add more photos" : "Add photos";
+    $("#photoInput").disabled = r.photos.length >= MAX_PHOTOS;
+    $("#photoHint").textContent = r.photos.length >= MAX_PHOTOS ? "That's the maximum of 8 for one report." : "Up to 8, taken now or from the gallery. They go into the PDF with their captions.";
+  }
+  if (!hasIdb) $(".photoblock").style.display = "none";
+  $("#photoInput").addEventListener("change", function(){
+    var files = Array.prototype.slice.call(this.files || []).slice(0, MAX_PHOTOS - r.photos.length); this.value = "";
+    if (!files.length) return; $("#photoLabel").textContent = "Adding";
+    var chain = Promise.resolve();
+    files.forEach(function(f){ chain = chain.then(function(){ return compressImage(f).then(function(d){ var id = uid(); return idb.put(id, d).then(function(){ photoData[id] = d; r.photos.push({ id: id, caption: "" }); }); }); }).catch(function(){}); });
+    chain.then(function(){ renderPhotos(); changed(); });
+  });
+
+  $("#linePhotoInput").addEventListener("change", function(){
+    var f = this.files && this.files[0], rid = pendingRid; this.value = ""; pendingRid = null;
+    if (!f) return;
+    if (r.photos.length >= MAX_PHOTOS){ setStatus("That's the maximum of 8 photos for one report."); return; }
+    var row = null; r.work.forEach(function(w){ if (w.rid === rid) row = w; });
+    compressImage(f).then(function(d){ var id = uid(); return idb.put(id, d).then(function(){ photoData[id] = d; r.photos.push({ id: id, caption: clean(row && row.desc).slice(0, 90), rid: rid }); }); })
+      .then(function(){ renderList("work"); renderPhotos(); changed(); }).catch(function(){ setStatus("That photo couldn't be read. Try another."); });
+  });
+
+  /* ---------- voice to text (the phone's own speech recognition; nothing is uploaded by this page) ---------- */
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  var voiceLang = lsGet("ssrdpr.voice") || "hi-IN";
+  function renderLangs(){ $$("[data-langs] button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-lang") === voiceLang); }); }
+  $$("[data-langs] button").forEach(function(b){ b.addEventListener("click", function(){ voiceLang = b.getAttribute("data-lang"); lsSet("ssrdpr.voice", voiceLang); renderLangs(); }); });
+  renderLangs();
+  var VOICE_TARGETS = {
+    work: function(t){ var row = { desc: t, location: "", qty: "", rid: uid() }; if (r.work.length === 1 && !clean(r.work[0].desc) && !clean(r.work[0].location)) r.work[0] = row; else r.work.push(row); renderList("work"); changed(); $("#list-work").lastChild.scrollIntoView({ block: "nearest" }); },
+    issue: function(t){ addPick("issues", { severity: "Medium", desc: t, action: "" }); },
+    remarks: function(t){ appendText("remarks", t); },
+    nextDay: function(t){ appendText("nextDay", t); }
+  };
+  if (!SR){ $$(".voice").forEach(function(v){ v.classList.add("off"); }); if ($("#voiceHint")) $("#voiceHint").textContent = "This browser has no speech input; the mic key on your keyboard works in any box here."; }
+  $$("[data-mic]").forEach(function(btn){
+    var wrap = btn.parentNode, live = $(".live", wrap), label = btn.textContent, rec = null;
+    btn.addEventListener("click", function(){
+      if (rec){ try { rec.stop(); } catch (e) {} return; }
+      rec = new SR(); rec.lang = voiceLang; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+      var finalText = "";
+      rec.onresult = function(e){ var interim = ""; for (var i = e.resultIndex; i < e.results.length; i++){ var t = e.results[i][0].transcript; if (e.results[i].isFinal) finalText += t + " "; else interim += t; } live.textContent = (finalText + interim).trim(); };
+      rec.onerror = function(e){ var c = e && e.error; live.textContent = c === "not-allowed" || c === "service-not-allowed" ? "Microphone is blocked here. Use the mic key on your keyboard instead." : c === "no-speech" ? "Didn't catch that. Tap and try again." : "Speech input didn't work. Type it, or use the keyboard's mic key."; finalText = ""; };
+      rec.onend = function(){ btn.classList.remove("listening"); btn.textContent = label; rec = null; var t = clean(finalText); if (t){ live.textContent = ""; VOICE_TARGETS[btn.getAttribute("data-mic")](t); } };
+      btn.classList.add("listening"); btn.textContent = "Listening, tap when done"; live.textContent = "";
+      try { rec.start(); } catch (e) { rec = null; btn.classList.remove("listening"); btn.textContent = label; live.textContent = "Speech input didn't start. Type it, or use the keyboard's mic key."; }
+    });
+  });
+  function hasHindi(){ var t = [r.remarks, r.nextDay].concat(r.work.map(function(w){ return w.desc; })).concat(r.issues.map(function(i){ return i.desc + " " + i.action; })).join(" "); return /[\u0900-\u097F]/.test(t); }
+
+  /* ---------- preview ---------- */
+  function nil(){ return '<p class="nil">Nil reported.</p>'; }
+  function renderPreview(){
+    var mp = r.manpower.filter(function(m){ return clean(m.trade) && Number(m.count) > 0; }), tot = 0; mp.forEach(function(m){ tot += Number(m.count); });
+    var work = r.work.filter(function(w){ return clean(w.desc); }), mats = r.materials.filter(function(m){ return clean(m.item); }), eq = r.equipment.filter(function(e){ return clean(e.name); }), iss = r.issues.filter(function(i){ return clean(i.desc); });
+    var h = '<div class="ph"><div class="co"><i></i><div><b>' + (esc(r.company) || 'Company name') + '</b><em>Daily Progress Report</em></div></div><div class="rt">' + esc(fmtDate(r.date)) + (clean(r.reportNo) ? '<br>Ref. ' + esc(r.reportNo) : '') + '</div></div>';
+    h += '<div class="pb"><div class="det"><div><small>Project</small>' + (esc(r.project) || '-') + '</div><div><small>Client</small>' + (esc(r.client) || '-') + '</div><div><small>Location</small>' + (esc(r.location) || '-') + '</div><div><small>Prepared by</small>' + (clean(r.preparedBy) ? esc(r.preparedBy) + (clean(r.designation) ? ', ' + esc(r.designation) : '') : '-') + '</div></div>';
+    h += '<h3>1. Weather</h3><p>' + esc(r.weather || 'Not recorded') + (clean(r.temperature) ? ', ' + esc(r.temperature) + ' °C' : '') + (clean(r.hours) ? '. Working hours ' + esc(r.hours) : '') + '</p>';
+    h += '<h3>2. Manpower</h3>' + (mp.length ? '<table><tr><th>Trade</th><th class="r">Nos</th></tr>' + mp.map(function(m){ return '<tr><td>' + esc(m.trade) + '</td><td class="r">' + Number(m.count) + '</td></tr>'; }).join('') + '<tr class="tot"><td>Total manpower</td><td class="r">' + tot + '</td></tr></table>' : nil());
+    h += '<h3>3. Work Executed</h3>' + (work.length ? '<ol>' + work.map(function(w){ var s = [clean(w.location), clean(w.qty)].filter(Boolean).join('  |  '); return '<li>' + esc(w.desc) + (s ? '<small>' + esc(s) + '</small>' : '') + '</li>'; }).join('') + '</ol>' : nil());
+    h += '<h3>4. Materials Received</h3>' + (mats.length ? '<table><tr><th>Item</th><th>Quantity</th><th>Supplier / Remarks</th></tr>' + mats.map(function(m){ return '<tr><td>' + esc(m.item) + '</td><td>' + (esc(m.qty) || '-') + '</td><td>' + (esc(m.supplier) || '-') + '</td></tr>'; }).join('') + '</table>' : nil());
+    h += '<h3>5. Equipment on Site</h3>' + (eq.length ? '<table><tr><th>Equipment</th><th class="r">Nos</th><th>Status</th></tr>' + eq.map(function(e){ return '<tr><td>' + esc(e.name) + '</td><td class="r">' + (esc(e.nos) || '-') + '</td><td>' + esc(e.status) + '</td></tr>'; }).join('') + '</table>' : nil());
+    h += '<h3>6. Risks and Issues</h3>' + (iss.length ? '<table><tr><th>Severity</th><th>Description</th><th>Action</th></tr>' + iss.map(function(i){ return '<tr><td class="sev-' + esc(i.severity) + '">' + esc(i.severity) + '</td><td>' + esc(i.desc) + '</td><td>' + (esc(i.action) || '-') + '</td></tr>'; }).join('') + '</table>' : nil());
+    h += '<h3>7. Progress Remarks</h3>' + (clean(r.remarks) ? '<p>' + esc(r.remarks) + '</p>' : nil());
+    h += '<h3>8. Next-Day Plan</h3>' + (clean(r.nextDay) ? '<p>' + esc(r.nextDay) + '</p>' : nil());
+    var ph = (r.photos || []).filter(function(p){ return photoData[p.id]; });
+    if (ph.length) h += '<h3>9. Site Photographs</h3><div class="pgrid">' + ph.map(function(p, i){ return '<figure><img src="' + photoData[p.id].data + '" alt=""><figcaption>' + (esc(p.caption) || 'Photograph ' + (i + 1)) + '</figcaption></figure>'; }).join('') + '</div>';
+    h += '<div class="sig"><div>Prepared by<b>' + (esc(r.sigEngineer) || esc(r.preparedBy) || 'Site Engineer') + '</b></div><div>Reviewed by<b>' + (esc(r.sigManager) || 'Project Manager') + '</b></div><div>Acknowledged by<b>' + (esc(r.sigClient) || 'Client / Consultant') + '</b></div></div>';
+    h += '</div><div class="pf">Generated with SSR Site Log, a free tool by SSR Group Civil (ssrgroupcivil.in)</div>';
+    $("#paper").innerHTML = h;
+  }
+  var previewSoon = debounce(function(){ if (step === 4) renderPreview(); }, 150);
+  var saveDraftSoon = debounce(function(){ lsSet("ssrdpr.draft", r); }, 500);
+  function changed(){ previewSoon(); saveDraftSoon(); updateDetailsSummary(); }
+
+  /* ---------- saved reports ---------- */
+  function savedList(){ return lsGet("ssrdpr.reports") || []; }
+  function saveReport(){
+    var list = savedList(), snap = JSON.parse(JSON.stringify(r)), idx = -1;
+    for (var i = 0; i < list.length; i++) if (list[i].id === r.id) idx = i;
+    var entry = { id: r.id, savedAt: new Date().toISOString(), r: snap };
+    if (idx >= 0) list[idx] = entry; else list.unshift(entry);
+    lsSet("ssrdpr.reports", list.slice(0, 60)); renderSaved();
+  }
+  function renderSaved(){
+    var list = savedList(), ul = $("#savedList"); ul.innerHTML = "";
+    $("#drawerHint").textContent = list.length ? "Kept on this phone. Open one to edit it, or start the next day from it." : "Nothing saved yet. Reports you download are kept here automatically.";
+    list.forEach(function(e){
+      var li = document.createElement("li"), nm = document.createElement("div"); nm.className = "nm";
+      var b = document.createElement("b"); b.textContent = clean(e.r.project) || "Untitled project"; var sm = document.createElement("small"); sm.textContent = fmtShort(e.r.date) + (clean(e.r.reportNo) ? ", " + clean(e.r.reportNo) : ""); nm.appendChild(b); nm.appendChild(sm);
+      var ac = document.createElement("div"); ac.className = "ac";
+      [["Open", function(){ load(e.r); }], ["Next day", function(){ load(carryForward(e.r)); }], ["Delete", function(){ lsSet("ssrdpr.reports", savedList().filter(function(x){ return x.id !== e.id; })); renderSaved(); }]].forEach(function(a){ var bt = document.createElement("button"); bt.type = "button"; bt.className = "ghost"; bt.textContent = a[0]; bt.addEventListener("click", a[1]); ac.appendChild(bt); });
+      li.appendChild(nm); li.appendChild(ac); ul.appendChild(li);
+    });
+  }
+  function carryForward(src){
+    var n = JSON.parse(JSON.stringify(src)); n.id = uid(); var d = fromISO(n.date); d.setDate(d.getDate() + 1); n.date = iso(d);
+    n.reportNo = ""; n.temperature = ""; n.remarks = ""; n.nextDay = ""; n.photos = [];
+    n.work = [{ desc: "", location: "", qty: "", rid: uid() }]; n.materials = [{ item: "", qty: "", supplier: "" }]; n.issues = [{ severity: "Low", desc: "", action: "" }];
+    return n;
+  }
+  function load(data){ r = JSON.parse(JSON.stringify(data)); if (!r.id) r.id = uid(); if (!r.photos) r.photos = []; migrate(); photoData = {}; bindSimple(); renderAllLists(); loadPhotos(); lsSet("ssrdpr.draft", r); $("#drawer").classList.remove("open"); showStep(1); }
+  $("#reportsBtn").addEventListener("click", function(){ renderSaved(); $("#drawer").classList.toggle("open"); window.scrollTo({ top: 0 }); });
+  $("#saveNowBtn").addEventListener("click", function(){ saveReport(); $("#drawerHint").textContent = "Saved on this phone."; });
+  $("#newBtn").addEventListener("click", function(){ var b = blank(); b.company = r.company; b.project = r.project; b.location = r.location; b.preparedBy = r.preparedBy; b.designation = r.designation; load(b); });
+
+  /* ---------- PDF, share, print ---------- */
+  function pdfName(){ return "DPR_" + slug(r.project) + "_" + (r.date || todayISO()) + ".pdf"; }
+  function buildPdfDoc(){ var rr = JSON.parse(JSON.stringify(r)); rr._photos = (r.photos || []).map(function(p){ var d = photoData[p.id]; return d ? { data: d.data, w: d.w, h: d.h, caption: p.caption } : null; }); return buildDprPdf(window.jspdf.jsPDF, rr); }
+  function explainDl(e){ var c = e && e.code; if (c === "declined") return "Download cancelled."; if (c === "rate_limited") return "A save prompt is already open. Answer it, then try again."; if (c === "too_large") return "The PDF is too large for this device to save; remove a photo or two."; return "This view could not save the file. Use Print and choose Save as PDF."; }
+  var dlPromise = haveClaude ? window.claude.use("downloads").catch(function(){ return null; }) : Promise.resolve(null);
+  function downloadPdf(){
+    if (!window.jspdf || !window.jspdf.jsPDF){ setStatus("The PDF engine is still loading. Try again in a moment, or use Print."); return; }
+    if (hasHindi()){ setStatus(polishMode ? "Some lines are in Hindi, which the PDF cannot print. Tap Polish wording to turn them into English first." : "Some lines are in Hindi, which the PDF cannot print. Please rewrite them in English (or set up polishing)."); return; }
+    var btn = $("#nextBtn"); btn.disabled = true; setStatus("Preparing PDF");
+    var doc; try { doc = buildPdfDoc(); } catch (e) { setStatus("The PDF could not be built. Check the entries and try again."); btn.disabled = false; return; }
+    saveReport(); var name = pdfName();
+    dlPromise.then(function(dl){
+      if (dl) return dl.save({ filename: name, data: doc.output("arraybuffer") }).then(function(){ setStatus("PDF saved as " + name + "."); }, function(e){ setStatus(explainDl(e)); });
+      try { doc.save(name); setStatus("Download started: " + name + ". If nothing appears, use Print and choose Save as PDF."); } catch (e) { setStatus("Could not start the download. Use Print and choose Save as PDF."); }
+    }).then(function(){ btn.disabled = false; });
+  }
+  function canShareFiles(){ try { return !haveClaude && !!(navigator.canShare && navigator.canShare({ files: [new File([new Blob(["x"])], "t.pdf", { type: "application/pdf" })] })); } catch (e) { return false; } }
+  if (canShareFiles()) $("#shareBtn").style.display = "inline-block";
+  $("#shareBtn").addEventListener("click", function(){
+    if (!window.jspdf || !window.jspdf.jsPDF){ setStatus("The PDF engine is still loading. Try again in a moment."); return; }
+    if (hasHindi()){ setStatus(polishMode ? "Some lines are in Hindi, which the PDF cannot print. Tap Polish wording to turn them into English first." : "Some lines are in Hindi, which the PDF cannot print. Please rewrite them in English (or set up polishing)."); return; }
+    var doc; try { doc = buildPdfDoc(); } catch (e) { setStatus("The PDF could not be built. Check the entries and try again."); return; }
+    saveReport(); var file = new File([doc.output("blob")], pdfName(), { type: "application/pdf" });
+    navigator.share({ files: [file], title: "DPR " + clean(r.project) + " " + fmtShort(r.date) }).then(function(){ setStatus("Shared."); }).catch(function(e){ if (!(e && e.name === "AbortError")) setStatus("Sharing didn't work here; use Download instead."); });
+  });
+  $("#printBtn").addEventListener("click", function(){ renderPreview(); saveReport(); window.print(); });
+
+  /* ---------- polish wording: Claude inside claude.ai, or your own worker when self-hosted ---------- */
+  var polishMode = null;
+  function showPolish(){ $("#polishBtn").style.display = "inline-block"; $("#polishBtn2").style.display = "inline-block"; }
+  if (haveClaude){ window.claude.use("sample").then(function(s){ sampleNs = s; if (s){ polishMode = "claude"; showPolish(); } }).catch(function(){}); }
+  else if (POLISH_ENDPOINT){ polishMode = "endpoint"; showPolish(); }
+  function buildPolishPrompt(payload){ return "Rewrite these daily progress report entries from a construction site in formal, client-facing construction-industry English. The entries may be written in English, Hindi or Hinglish (Hindi in Roman script); always answer in English. Keep every fact, quantity, grade, location, time and name exactly as given and add nothing new. Fix grammar and spelling, use third person, and make each entry one or two complete sentences. Leave an empty string empty. Reply with only a JSON object of this exact shape, keeping the same order and count of items: {\"work\": [\"...\"], \"issues\": [{\"desc\": \"...\", \"action\": \"...\"}], \"remarks\": \"...\", \"nextDay\": \"...\"}\n\nEntries:\n" + JSON.stringify(payload); }
+  function polishRequest(payload){
+    if (polishMode === "claude") return sampleNs.json(buildPolishPrompt(payload), { modelTier: "default", cache: false });
+    return fetch(POLISH_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", "X-App-Token": APP_TOKEN }, body: JSON.stringify({ entries: payload }) })
+      .then(function(res){ return res.json().catch(function(){ return {}; }).then(function(j){ if (!res.ok) throw { code: "http", status: res.status, message: j && j.error }; return j.result; }); });
+  }
+  function polishNow(){
+    if (!polishMode) return;
+    var payload = { work: r.work.map(function(w){ return clean(w.desc); }), issues: r.issues.map(function(i){ return { desc: clean(i.desc), action: clean(i.action) }; }), remarks: clean(r.remarks), nextDay: clean(r.nextDay) };
+    if (!payload.work.some(Boolean) && !payload.issues.some(function(i){ return i.desc; }) && !payload.remarks && !payload.nextDay){ setStatus("Add some lines first; polishing rewrites what is there."); return; }
+    var btn = $("#polishBtn"); btn.disabled = true; $("#polishBtn2").disabled = true; setStatus("Polishing wording");
+    polishRequest(payload).then(function(out){
+      if (!out || typeof out !== "object") throw { code: "invalid_json" };
+      polishBackup = JSON.parse(JSON.stringify({ work: r.work, issues: r.issues, remarks: r.remarks, nextDay: r.nextDay }));
+      if (Array.isArray(out.work)) out.work.forEach(function(t, i){ if (r.work[i] && typeof t === "string" && clean(r.work[i].desc)){ var oldD = clean(r.work[i].desc), rid = r.work[i].rid; r.work[i].desc = clean(t); (r.photos || []).forEach(function(p){ if (p.rid === rid && clean(p.caption) === oldD.slice(0, 90)) p.caption = clean(t).slice(0, 90); }); } });
+      if (Array.isArray(out.issues)) out.issues.forEach(function(o, i){ if (r.issues[i] && o && typeof o === "object"){ if (typeof o.desc === "string" && clean(r.issues[i].desc)) r.issues[i].desc = clean(o.desc); if (typeof o.action === "string" && clean(r.issues[i].action)) r.issues[i].action = clean(o.action); } });
+      if (typeof out.remarks === "string" && clean(r.remarks)) r.remarks = clean(out.remarks);
+      if (typeof out.nextDay === "string" && clean(r.nextDay)) r.nextDay = clean(out.nextDay);
+      bindSimple(); renderAllLists(); renderPhotos(); renderPreview(); lsSet("ssrdpr.draft", r);
+      $("#undoBtn").style.display = "inline-block"; setStatus("Wording polished. Read it through before you download.");
+    }).catch(function(e){
+      var c = e && e.code;
+      if (c === "http"){ if (e.status === 429) setStatus("The polishing service has reached its limit for now. Try again later."); else if (e.status === 401 || e.status === 403) setStatus("This copy of the page isn't authorised to use the polishing service."); else setStatus("The polishing service returned an error. Nothing was changed; try again."); }
+      else if (c === "not_granted" || c === "sampling_disabled" || c === "not_declared" || c === "capability_disabled"){ $("#polishBtn").style.display = "none"; $("#polishBtn2").style.display = "none"; setStatus("Polishing with Claude isn't available in this view."); }
+      else if (c === "rate_limited") setStatus("Claude is busy for this account right now. Try again in a little while.");
+      else if (c === "refused") setStatus("Claude declined to rewrite this text. Change the wording and try again.");
+      else if (e instanceof TypeError) setStatus("Couldn't reach the polishing service. Check the connection and try again.");
+      else setStatus("The rewrite didn't come back cleanly. Nothing was changed; try again.");
+    }).then(function(){ btn.disabled = false; $("#polishBtn2").disabled = false; });
+  }
+  $("#polishBtn").addEventListener("click", polishNow);
+  $("#polishBtn2").addEventListener("click", function(){ $("#polishBtn2").disabled = true; polishNow(); });
+  $("#undoBtn").addEventListener("click", function(){ if (!polishBackup) return; r.work = polishBackup.work; r.issues = polishBackup.issues; r.remarks = polishBackup.remarks; r.nextDay = polishBackup.nextDay; polishBackup = null; bindSimple(); renderAllLists(); renderPreview(); lsSet("ssrdpr.draft", r); $("#undoBtn").style.display = "none"; setStatus("Original wording restored."); });
+
+  /* ---------- boot ---------- */
+  bindSimple(); renderAllLists(); renderSaved(); loadPhotos(); showStep(1);
+})();
+</script>
+</body>
+</html>
