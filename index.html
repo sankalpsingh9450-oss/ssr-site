@@ -201,6 +201,8 @@ p{margin:0}
 .add:hover{background:var(--ink);color:var(--sheet);transform:rotate(90deg)}
 .add .icon{width:16px;height:16px}
 .add.done{background:var(--ink);color:var(--sheet)}
+.arch .more{position:relative;z-index:3;justify-self:start;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--gold);text-decoration:none;border-bottom:1px solid transparent;padding:4px 0}
+.arch .more:hover{border-bottom-color:var(--gold)}
 @media (max-width:1100px){.arches{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:640px){
   .arches{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;padding-bottom:10px;margin-inline:calc(-1*var(--gutter));padding-inline:var(--gutter);scrollbar-width:none}
@@ -455,6 +457,9 @@ form.enq{background:var(--sheet);border:1px solid var(--line);border-radius:6px;
 .attached ol{margin:6px 0 0;padding-left:18px}
 .form-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .fine{font-size:13px;color:var(--ink-2)}
+.fstatus{font-size:14.5px;border-left:2px solid var(--gold);padding-left:12px}
+.fstatus.err{border-color:#B4452F}
+.hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
 @media (max-width:900px){.contact-grid{grid-template-columns:1fr}}
 @media (max-width:520px){.two{grid-template-columns:1fr}}
 
@@ -508,6 +513,17 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
 .toast.on{transform:translate(-50%,0);visibility:visible;transition:transform .5s var(--ease)}
 .toast button{background:var(--gold-hi);color:var(--night);border-radius:999px;padding:8px 14px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;white-space:nowrap}
 
+/* phone call bar */
+.callbar{display:none}
+@media (max-width:720px){
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  .callbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:55;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(10,16,32,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--night-line)}
+  .callbar a{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:999px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;text-decoration:none}
+  .callbar .c{border:1px solid rgba(227,196,126,.6);color:#F4EEDF}
+  .callbar .w{background:var(--gold-hi);color:var(--night)}
+  .toast{bottom:calc(78px + env(safe-area-inset-bottom,0px))}
+}
+
 /* scroll reveal: CSS scroll timeline only, so content stays readable where unsupported */
 @supports (animation-timeline:view()){
   .rv{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
@@ -523,6 +539,8 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
 }
 
 </style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"GeneralContractor","@id":"https://ssrgroupcivil.in/#business","name":"SSR Group Civil","url":"https://ssrgroupcivil.in/","logo":"https://ssrgroupcivil.in/img/logo-cut.png","image":"https://ssrgroupcivil.in/img/villa-dusk.jpg","telephone":"+91 87961 38550","email":"info@ssrgroupcivil.in","address":{"@type":"PostalAddress","streetAddress":"E/207, Apex Aura Society, Sector 1","addressLocality":"Greater Noida West","addressRegion":"Uttar Pradesh","addressCountry":"IN"},"areaServed":["Delhi","Noida","Greater Noida West","Greater Noida","Ghaziabad","Gurugram"],"description":"Construction management consultancy in Delhi NCR: builder floors and houses, villas, flat interiors, project control (PMC), firefighting and plumbing, and 3D project pages.","knowsAbout":["RCC construction","Builder floor construction","Project management consultancy","Interior fit-out","Firefighting systems","Plumbing","3D walkthroughs"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"SSR Group Civil","url":"https://ssrgroupcivil.in/","publisher":{"@id":"https://ssrgroupcivil.in/#business"}}</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -535,6 +553,7 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
   <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h12"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></symbol>
   <symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 2.8l8 4.5v9.4l-8 4.5-8-4.5V7.3z"/><path d="M4 7.3l8 4.5 8-4.5M12 11.8v9.4"/></symbol>
   <symbol id="i-pour" viewBox="0 0 40 40"><path d="M7 7h20v12a3 3 0 0 1-3 3H10a3 3 0 0 1-3-3z"/><path d="M27 10h3a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3h-3"/><path d="M11 13l3 3 6-6"/><path d="M6 33h28M10 28h20"/></symbol>
   <symbol id="i-dpr" viewBox="0 0 40 40"><rect x="5" y="8" width="30" height="26" rx="2"/><path d="M5 15h30M13 4v8M27 4v8"/><circle cx="20" cy="25" r="5"/><path d="M27 19h3"/></symbol>
@@ -581,7 +600,7 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
   <div class="wrap">
     <a class="brand" href="#home" aria-label="SSR Group Civil, home"><img src="img/logo.png" alt="" width="141" height="112"><span><b>SSR Group Civil</b><small>Civil · PMC · Interiors · 3D</small></span></a>
     <nav class="nav" aria-label="Sections">
-      <a href="#build">Build</a><a href="#work">Work</a><a href="#studio">Interiors</a><a href="#walk">Walkthroughs</a><a href="#method">Method</a><a href="#contact">Contact</a>
+      <a href="#build">Build</a><a href="#work">Work</a><a href="#studio">Interiors</a><a href="#walk">Walkthroughs</a><a href="/construction-cost-calculator">Costs</a><a href="#contact">Contact</a>
     </nav>
     <div class="tools">
       <a class="tool wa" id="wa-top" href="https://wa.me/918796138550" target="_blank" rel="noopener" aria-label="WhatsApp SSR Group Civil"><svg class="icon fill"><use href="#i-wa"/></svg></a>
@@ -592,15 +611,15 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
 </header>
 <nav class="mobile-nav" id="mobile-nav" aria-label="Sections">
   <button class="close" id="menu-close" type="button" aria-label="Close menu"><svg class="icon"><use href="#i-x"/></svg></button>
-  <a href="#build">Build</a><a href="#work">Work</a><a href="#studio">Interiors</a><a href="#walk">Walkthroughs</a><a href="#method">Method</a><a href="#onsite">From the site</a><a href="#models">3D models</a><a href="#contact">Contact</a>
+  <a href="#build">Build</a><a href="#work">Work</a><a href="#studio">Interiors</a><a href="#walk">Walkthroughs</a><a href="#method">Method</a><a href="#onsite">From the site</a><a href="#models">3D models</a><a href="/construction-cost-calculator">Cost calculator</a><a href="#contact">Contact</a>
 </nav>
 
 <main>
 <section class="hero" id="home" aria-label="Introduction">
-  <figure class="slide on" data-plate="Entrance foyer|Concept visualisation"><img src="img/foyer.jpg" alt="Warm stone entrance foyer with a curved staircase and an indoor olive tree, concept visualisation" width="1672" height="941" fetchpriority="high"></figure>
-  <figure class="slide" data-plate="AURA01, Kiradi|Live project · reference visualisation"><img src="img/aura01-ref.jpg" alt="AURA01 corner residence at dusk in ivory and charcoal with black balcony railings, reference-based visualisation" width="1672" height="941" loading="lazy"></figure>
-  <figure class="slide" data-plate="Towers at golden hour|Concept visualisation"><img src="img/towers.jpg" alt="Residential towers beside a landscaped podium garden at golden hour, concept visualisation" width="1672" height="941" loading="lazy"></figure>
-  <figure class="slide" data-plate="Villa at dusk|Concept visualisation"><img src="img/villa-dusk.jpg" alt="Two-storey cream and charcoal villa with double-height glazing and a pool terrace at dusk, concept visualisation" width="1672" height="941" loading="lazy"></figure>
+  <figure class="slide on" data-plate="Entrance foyer|Concept visualisation"><img src="img/foyer.jpg" srcset="img/foyer-960.jpg 960w, img/foyer.jpg 1672w" sizes="100vw" alt="Warm stone entrance foyer with a curved staircase and an indoor olive tree, concept visualisation" width="1672" height="941" fetchpriority="high"></figure>
+  <figure class="slide" data-plate="AURA01, Kiradi|Live project · reference visualisation"><img src="img/aura01-ref.jpg" srcset="img/aura01-ref-960.jpg 960w, img/aura01-ref.jpg 1672w" sizes="100vw" alt="AURA01 corner residence at dusk in ivory and charcoal with black balcony railings, reference-based visualisation" width="1672" height="941" loading="lazy"></figure>
+  <figure class="slide" data-plate="Towers at golden hour|Concept visualisation"><img src="img/towers.jpg" srcset="img/towers-960.jpg 960w, img/towers.jpg 1672w" sizes="100vw" alt="Residential towers beside a landscaped podium garden at golden hour, concept visualisation" width="1672" height="941" loading="lazy"></figure>
+  <figure class="slide" data-plate="Villa at dusk|Concept visualisation"><img src="img/villa-dusk.jpg" srcset="img/villa-dusk-960.jpg 960w, img/villa-dusk.jpg 1672w" sizes="100vw" alt="Two-storey cream and charcoal villa with double-height glazing and a pool terrace at dusk, concept visualisation" width="1672" height="941" loading="lazy"></figure>
   <div class="plate" id="hero-plate"><b>Entrance foyer</b>Concept visualisation</div>
   <div class="copy">
     <div class="wrap">
@@ -628,43 +647,49 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
   <div class="wrap">
     <div class="head-row rv">
       <div><p class="eyebrow">Start here</p><h2 id="build-h">What are you <em>building?</em></h2></div>
-      <p class="lede">Six kinds of work, one way of running them. Tap a card to see what SSR handles, or press + to add it to your enquiry.</p>
+      <div style="display:grid;gap:14px;justify-items:start"><p class="lede">Six kinds of work, one way of running them. Tap a card to see what SSR handles, or press + to add it to your enquiry.</p><a class="link-arrow" href="/construction-cost-calculator">Estimate your build cost <svg class="icon"><use href="#i-right"/></svg></a></div>
     </div>
     <div class="arches">
       <article class="arch rv" data-key="floors">
         <div class="frame"><img src="img/c-aura01-ref.jpg" alt="AURA01 corner residence at dusk, reference-based visualisation" width="720" height="960" loading="lazy"><span class="tag live">Live · AURA01</span></div>
         <div class="name"><h3>Builder floors</h3><button class="add" type="button" data-add="floors" aria-label="Add builder floors to enquiry"><svg class="icon"><use href="#i-plus"/></svg></button></div>
         <p>G+3 and G+4 on tight urban plots, with a drawing for every slab.</p>
+        <a class="more" href="/builder-floor-construction-delhi">Builder floors in Delhi &rarr;</a>
         <button class="open" type="button" data-open="floors" aria-label="Builder floors: what SSR handles"></button>
       </article>
       <article class="arch rv" data-key="villas">
         <div class="frame"><img src="img/c-villa.jpg" alt="Two-storey villa with double-height glazing and a pool, concept visualisation" width="720" height="960" loading="lazy"><span class="tag">Concept</span></div>
         <div class="name"><h3>Villas &amp; farmhouses</h3><button class="add" type="button" data-add="villas" aria-label="Add villas and farmhouses to enquiry"><svg class="icon"><use href="#i-plus"/></svg></button></div>
         <p>Double-height rooms, pools and façades, modelled before they are built.</p>
+        <a class="more" href="/villa-farmhouse-construction">Villas &amp; farmhouses &rarr;</a>
         <button class="open" type="button" data-open="villas" aria-label="Villas and farmhouses: what SSR handles"></button>
       </article>
       <article class="arch rv" data-key="interiors">
         <div class="frame"><img src="img/c-flat-living.jpg" alt="Ivory and oak apartment living and dining room, concept visualisation" width="720" height="960" loading="lazy"><span class="tag">Studio</span></div>
         <div class="name"><h3>Flat interiors</h3><button class="add" type="button" data-add="interiors" aria-label="Add flat interiors to enquiry"><svg class="icon"><use href="#i-plus"/></svg></button></div>
         <p>Kitchens, wardrobes, ceilings and lighting for society flats.</p>
+        <a class="more" href="/flat-interiors-greater-noida-west">Interiors, Greater Noida West &rarr;</a>
         <button class="open" type="button" data-open="interiors" aria-label="Flat interiors: what SSR handles"></button>
       </article>
       <article class="arch rv" data-key="towers">
         <div class="frame"><img src="img/c-towers.jpg" alt="Residential towers beside a landscaped garden, concept visualisation" width="720" height="960" loading="lazy"><span class="tag">PMC</span></div>
         <div class="name"><h3>Towers &amp; project control</h3><button class="add" type="button" data-add="towers" aria-label="Add towers and project control to enquiry"><svg class="icon"><use href="#i-plus"/></svg></button></div>
         <p>Execution control for developers: BBS, pour cards, firefighting, weekly reports.</p>
+        <a class="more" href="/project-management-consultancy">Project control / PMC &rarr;</a>
         <button class="open" type="button" data-open="towers" aria-label="Towers and project control: what SSR handles"></button>
       </article>
       <article class="arch rv" data-key="courtyard">
         <div class="frame"><img src="img/c-courtyard.jpg" alt="Sandstone courtyard with a jaali screen and a planted court, concept visualisation" width="720" height="960" loading="lazy"><span class="tag">Concept</span></div>
         <div class="name"><h3>Courtyard homes</h3><button class="add" type="button" data-add="courtyard" aria-label="Add courtyard homes to enquiry"><svg class="icon"><use href="#i-plus"/></svg></button></div>
         <p>Jaali screens, stone and shaded courts for homes built around open space.</p>
+        <a class="more" href="/villa-farmhouse-construction">Courtyard homes &rarr;</a>
         <button class="open" type="button" data-open="courtyard" aria-label="Courtyard homes: what SSR handles"></button>
       </article>
       <article class="arch rv" data-key="pages">
         <div class="frame"><img src="img/c-masterplan.jpg" alt="Aerial view of a residential masterplan with towers around a central green, generic concept visualisation" width="720" height="960" loading="lazy"><span class="tag">3D page</span></div>
         <div class="name"><h3>3D project pages</h3><button class="add" type="button" data-add="pages" aria-label="Add 3D project pages to enquiry"><svg class="icon"><use href="#i-plus"/></svg></button></div>
         <p>Your project as a live 3D page with enquiries landing on your WhatsApp.</p>
+        <a class="more" href="/3d-project-pages">3D project pages &rarr;</a>
         <button class="open" type="button" data-open="pages" aria-label="3D project pages: what SSR handles"></button>
       </article>
     </div>
@@ -753,6 +778,7 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
           <span class="hand">for society flats, 2026</span>
           <h2 id="studio-h">Flat interior fit-out</h2>
           <p class="lede">Choose a home size, a palette and what you want done. We reply on WhatsApp with a scope and an estimate.</p>
+          <a class="link-arrow" href="/flat-interiors-greater-noida-west" style="justify-self:start">Interior prices and process</a>
         </div>
         <div class="opt" role="group" aria-labelledby="lg-size"><p class="legend" id="lg-size">Home size <b id="v-size">3 BHK</b></p><div class="pills" id="st-size"></div></div>
         <div class="opt" role="group" aria-labelledby="lg-pal"><p class="legend" id="lg-pal">Palette <b id="v-pal">Ivory &amp; Oak</b></p>
@@ -828,7 +854,7 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
       <div class="rv">
         <h2 class="stencil" id="onsite-h">From the <span>site</span></h2>
         <p class="lede">Apex Aura Society, Tower F: shuttering, slab and firefighting supervision on a 22-week programme from April 2026. These are the controls that ran on it.</p>
-        <div class="actions"><a class="btn ink" href="#contact">Get project control</a><a class="btn" href="#method">See the method</a></div>
+        <div class="actions"><a class="btn ink" href="#contact">Get project control</a><a class="btn" href="/project-management-consultancy">Project control in detail</a></div>
       </div>
       <div class="pile rv" aria-label="Sample site documents">
         <figure class="photo"><img src="img/c-aura01-dusk.jpg" alt="AURA01 at dusk, final façade render" width="720" height="960" loading="lazy"><figcaption>AURA01 · final façade render</figcaption></figure>
@@ -860,7 +886,7 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
         <li><div><b>We build and set it up</b><p>Towers, amenities and homes modelled to the drawing, with an enquiry form that lands on your WhatsApp.</p></div></li>
         <li><div><b>You share one link</b><p>Hosted on SSR's site or yours, with your branding. It updates when the design changes.</p></div></li>
       </ol>
-      <div class="actions"><a class="btn gold" id="wa-models" href="https://wa.me/918796138550" target="_blank" rel="noopener"><svg class="icon fill"><use href="#i-wa"/></svg>Send your drawings</a><button class="btn ghost-night" type="button" data-add="pages">Add to enquiry</button></div>
+      <div class="actions"><a class="btn gold" id="wa-models" href="https://wa.me/918796138550" target="_blank" rel="noopener"><svg class="icon fill"><use href="#i-wa"/></svg>Send your drawings</a><button class="btn ghost-night" type="button" data-add="pages">Add to enquiry</button><a class="btn ghost-night" href="/3d-project-pages">See every model</a></div>
     </div>
     <div class="mgrid rv">
       <a class="mcard" href="https://claude.ai/artifact/6JNEWYypMZHLZxRCTbofEY" target="_blank" rel="noopener"><span class="im"><img src="img/splendour-aerial.jpg" alt="Splendour by Apex Floral aerial, artist's impression" width="1264" height="848" loading="lazy"></span><span class="tx"><b>Splendour microsite</b><small>Eight towers, nine amenities, six homes</small><span class="go">Open the page</span></span></a>
@@ -878,7 +904,7 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
       <h2 id="contact-h">Tell us what you're <em>building.</em></h2>
       <p class="lede" style="margin-top:18px">WhatsApp is the quickest. The form writes the message for you, including anything in your enquiry list.</p>
       <address>
-        <div><small>WhatsApp and phone</small><span class="copyline"><span class="num">+91 87961 38550</span><button class="copy-btn" type="button" data-copy="+91 87961 38550">Copy</button></span></div>
+        <div><small>WhatsApp and phone</small><span class="copyline"><a class="num" href="tel:+918796138550" style="text-decoration:none">+91 87961 38550</a><button class="copy-btn" type="button" data-copy="+91 87961 38550">Copy</button></span></div>
         <div><small>Email</small><span class="copyline"><span>info@ssrgroupcivil.in</span><button class="copy-btn" type="button" data-copy="info@ssrgroupcivil.in">Copy</button></span></div>
         <div><small>Office</small><span>E/207, Apex Aura Society, Sector 1, Greater Noida West</span></div>
         <div><small>Working across</small><span>Greater Noida West, Noida, Ghaziabad, Delhi and Gurugram</span></div>
@@ -901,11 +927,14 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
       </label>
       <label class="field" for="f-msg">Tell us a little<textarea id="f-msg" name="msg" placeholder="Location, plot or flat size, and what you want built or shown."></textarea></label>
       <div class="attached" id="f-attached"></div>
+      <label class="hp" aria-hidden="true">Leave empty<input id="f-honey" name="_honey" tabindex="-1" autocomplete="off"></label>
       <div class="form-actions">
-        <a class="btn ink" id="f-wa" href="https://wa.me/918796138550" target="_blank" rel="noopener"><svg class="icon fill"><use href="#i-wa"/></svg>Send on WhatsApp</a>
-        <button class="btn" id="f-copy" type="button"><svg class="icon"><use href="#i-copy"/></svg>Copy message</button>
+        <button class="btn ink" id="f-send" type="submit">Send enquiry <svg class="icon"><use href="#i-right"/></svg></button>
+        <a class="btn" id="f-wa" href="https://wa.me/918796138550" target="_blank" rel="noopener"><svg class="icon fill"><use href="#i-wa"/></svg>Send on WhatsApp</a>
+        <button class="btn" id="f-copy" type="button"><svg class="icon"><use href="#i-copy"/></svg>Copy</button>
       </div>
-      <p class="fine" id="f-fine">Nothing is stored on this site. Drawings and brochures can follow in the same chat.</p>
+      <p class="fstatus" id="f-status" role="status" aria-live="polite" hidden></p>
+      <p class="fine" id="f-fine">Send enquiry emails your name, number and message to SSR. Nothing is stored on this site. Drawings and brochures can follow on WhatsApp.</p>
     </form>
   </div>
 </section>
@@ -915,9 +944,9 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
   <div class="wrap">
     <div class="fgrid">
       <div><img src="img/logo-cut.png" alt="SSR Group Civil" width="404" height="319" loading="lazy"><p>Civil execution, project control, firefighting, plumbing, interiors and 3D for Delhi NCR.</p></div>
-      <div><h4>Build</h4><a href="#build">Builder floors</a><a href="#build">Villas &amp; farmhouses</a><a href="#studio">Flat interiors</a><a href="#onsite">Project control</a></div>
-      <div><h4>See</h4><a href="#work">Signatures</a><a href="#walk">Walkthroughs</a><a href="#models">3D model pages</a><a href="#aura01">AURA01, live</a></div>
-      <div><h4>Office</h4><span>E/207, Apex Aura Society, Sector 1, Greater Noida West, Uttar Pradesh</span><span>+91 87961 38550</span><span>info@ssrgroupcivil.in</span></div>
+      <div><h4>Services</h4><a href="/builder-floor-construction-delhi">Builder floors &amp; G+3 homes</a><a href="/villa-farmhouse-construction">Villas &amp; farmhouses</a><a href="/flat-interiors-greater-noida-west">Flat interiors</a><a href="/project-management-consultancy">Project control / PMC</a><a href="/firefighting-plumbing-contractor">Firefighting &amp; plumbing</a><a href="/3d-project-pages">3D project pages</a></div>
+      <div><h4>Tools &amp; work</h4><a href="/construction-cost-calculator">Construction cost calculator</a><a href="/site-log">Free daily progress report tool</a><a href="#work">Signatures</a><a href="#walk">Walkthroughs</a><a href="#aura01">AURA01, live</a></div>
+      <div><h4>Office</h4><span>E/207, Apex Aura Society, Sector 1, Greater Noida West, Uttar Pradesh</span><a href="tel:+918796138550">+91 87961 38550</a><a href="mailto:info@ssrgroupcivil.in">info@ssrgroupcivil.in</a></div>
     </div>
     <p class="word" aria-hidden="true">SSR Group Civil</p>
     <div class="base"><span>© 2026 SSR Group Civil</span><span>Renders and models are artist's impressions unless marked as a live project.</span></div>
@@ -950,6 +979,7 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
   </div>
 </dialog>
 
+<div class="callbar"><a class="c" href="tel:+918796138550"><svg class="icon"><use href="#i-phone"/></svg>Call</a><a class="w" id="wa-bar" href="https://wa.me/918796138550" target="_blank" rel="noopener"><svg class="icon fill"><use href="#i-wa"/></svg>WhatsApp</a></div>
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toast-t">Added to your enquiry</span><button type="button" id="toast-b">View list</button></div>
 
 <script>
@@ -978,31 +1008,31 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
 
   /* ---------- content ---------- */
   var SERVICES = {
-    floors: { title: 'Builder floors', detail: 'G+3 / G+4 build', img: 'img/c-aura01-ref.jpg', full: 'img/aura01-ref.jpg', k: 'Builder floors · G+3 and G+4',
+    floors: { title: 'Builder floors', page: '/builder-floor-construction-delhi', detail: 'G+3 / G+4 build', img: 'img/c-aura01-ref.jpg', full: 'img/aura01-ref.jpg', k: 'Builder floors · G+3 and G+4',
       p: 'Structure, services and finishes on a tight urban plot, with a drawing for every slab.',
       ul: ['Foundation, column, beam and slab rebar drawings', 'Shuttering plan and a pour card before each slab', 'Electrical and plumbing layouts, floor by floor', 'Brick, steel and concrete estimates per floor cycle', 'Façade scheme agreed on a 3D model'],
       note: 'Live example: AURA01, a G+3 on an 18 × 32 ft corner plot in Kiradi. The picture is a reference-based visualisation of it, not the issued drawing.',
       link: { href: '#aura01', label: 'See AURA01', internal: true } },
-    villas: { title: 'Villas & farmhouses', detail: 'Villa or farmhouse', img: 'img/c-villa.jpg', full: 'img/villa-dusk.jpg', k: 'Villas & farmhouses',
+    villas: { title: 'Villas & farmhouses', page: '/villa-farmhouse-construction', detail: 'Villa or farmhouse', img: 'img/c-villa.jpg', full: 'img/villa-dusk.jpg', k: 'Villas & farmhouses',
       p: 'Double-height rooms, pools and façades, modelled and walked through before they are built.',
       ul: ['Concept plans, sections and elevations', 'A walk-through 3D model of every room', 'RCC execution from structural drawings', 'Interiors and landscape coordinated with the build'],
       note: 'The picture is a concept render. Walk through a villa model to see the level of detail.',
       link: { href: LINKS.villa, label: 'Walk through a villa' } },
-    interiors: { title: 'Flat interiors', detail: 'Society flat fit-out', img: 'img/c-flat-living.jpg', full: 'img/flat-living.jpg', k: 'Flat interiors · society flats',
+    interiors: { title: 'Flat interiors', page: '/flat-interiors-greater-noida-west', detail: 'Society flat fit-out', img: 'img/c-flat-living.jpg', full: 'img/flat-living.jpg', k: 'Flat interiors · society flats',
       p: 'Fit-out for flat owners in Greater Noida West and across NCR.',
       ul: ['Measured survey and a furnished plan', 'A material board before anything is ordered', 'Modular kitchen and wardrobe drawings', 'False ceiling, lighting, painting and polish', 'A progress update on WhatsApp every site day'],
       note: 'The picture is a concept render. Build your own scope in the interiors studio.',
       link: { href: '#studio', label: 'Open the interiors studio', internal: true } },
-    towers: { title: 'Towers & project control', detail: 'PMC / execution control', img: 'img/c-towers.jpg', full: 'img/towers.jpg', k: 'Towers & project control',
+    towers: { title: 'Towers & project control', page: '/project-management-consultancy', detail: 'PMC / execution control', img: 'img/c-towers.jpg', full: 'img/towers.jpg', k: 'Towers & project control',
       p: 'An execution-control layer between the approved drawings and the site. Design stays with the architect.',
       ul: ['BOQ, BBS and material reconciliation', 'IS 456 pour cards before every pour', 'RFI and NCR registers kept until closed', 'Firefighting risers, sprinklers and detection, tested and commissioned', 'Weekly reports with planned against actual and earned value', 'Fee as a percentage of project cost or a fixed retainer, never a margin on materials'],
       note: 'Recent: Apex Aura Society, Tower F, shuttering, slab and firefighting supervision. The picture is a concept render.',
       link: { href: '#onsite', label: 'See the site record', internal: true } },
-    courtyard: { title: 'Courtyard homes', detail: 'Courtyard home', img: 'img/c-courtyard.jpg', full: 'img/courtyard.jpg', k: 'Courtyard homes',
+    courtyard: { title: 'Courtyard homes', page: '/villa-farmhouse-construction', detail: 'Courtyard home', img: 'img/c-courtyard.jpg', full: 'img/courtyard.jpg', k: 'Courtyard homes',
       p: 'Homes planned around open space: jaali screens, stone and shaded courts.',
       ul: ['Planning around a central court', 'Jaali, stone and board-formed concrete detailing', 'Concept sheets and 3D views before drawings are issued', 'RCC execution and finishes on site'],
       note: 'The picture is a concept render. Our Aangan courtyard villa concept is planned on a 1,000 sq yd plot.' },
-    pages: { title: '3D project pages', detail: 'Hosted 3D model page', img: 'img/c-masterplan.jpg', full: 'img/masterplan.jpg', k: 'Post your 3D models through SSR Group',
+    pages: { title: '3D project pages', page: '/3d-project-pages', detail: 'Hosted 3D model page', img: 'img/c-masterplan.jpg', full: 'img/masterplan.jpg', k: 'Post your 3D models through SSR Group',
       p: 'Your project as a live 3D page with your name on it, and enquiries that land on your WhatsApp.',
       ul: ['Built from a brochure, drawings, a SketchUp file or a model you already have', 'Aerial with tap-to-see amenities, homes with plans and interiors', 'An enquiry form wired to your WhatsApp', 'One link for chats, QR codes and the sales office'],
       note: "The picture is a generic masterplan concept, not the Splendour layout. Splendour by Apex Floral is a demonstration by SSR, not the developer's official page.",
@@ -1201,6 +1231,7 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
       if (!o.link.internal) { a.target = '_blank'; a.rel = 'noopener'; } else a.addEventListener('click', function () { sheet.close(); });
       acts.appendChild(a);
     }
+    if (o.page) acts.appendChild(el('a', { class: 'btn', href: o.page }, 'Full details, costs &amp; FAQs'));
     if (typeof sheet.showModal === 'function') sheet.showModal(); else sheet.setAttribute('open', '');
   }
   $('#sheet-x').addEventListener('click', function () { sheet.close ? sheet.close() : sheet.removeAttribute('open'); });
@@ -1208,7 +1239,7 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
   $$('[data-open]').forEach(function (b) {
     b.addEventListener('click', function () {
       var key = b.getAttribute('data-open'), s = SERVICES[key];
-      openSheet({ img: s.full, alt: s.title, k: s.k, h: s.title, p: s.p, ul: s.ul, note: s.note, link: s.link, add: function () { addService(key); } });
+      openSheet({ img: s.full, alt: s.title, k: s.k, h: s.title, p: s.p, ul: s.ul, note: s.note, link: s.link, page: s.page, add: function () { addService(key); } });
     });
   });
 
@@ -1489,8 +1520,23 @@ dialog.sheet::backdrop{background:rgba(6,10,22,.62);backdrop-filter:blur(4px)}
   }
   ['#f-name', '#f-phone', '#f-topic', '#f-msg'].forEach(function (s) { $(s).addEventListener('input', updateForm); $(s).addEventListener('change', updateForm); });
   $('#f-copy').addEventListener('click', function () { copyText(compose(formData()), 'Message copied'); });
-  $('#enq').addEventListener('submit', function (e) { e.preventDefault(); });
+  $('#enq').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var d = formData(), st = $('#f-status'), btn = $('#f-send');
+    function say(t, err) { st.hidden = false; st.textContent = t; st.classList.toggle('err', !!err); }
+    if ($('#f-honey').value) return;
+    if (!d.name || d.phone.replace(/\D/g, '').length < 10) { say('Please add your name and a 10-digit mobile number.', true); return; }
+    var body = { _subject: 'Website enquiry: ' + d.topic, _template: 'table', _captcha: 'false', Name: d.name, Mobile: d.phone, Topic: d.topic, Message: d.msg,
+      'Enquiry list': items.map(function (it) { return it.title + (it.detail ? ' (' + it.detail + ')' : ''); }).join('; '), Page: '/' };
+    btn.disabled = true; say('Sending…');
+    fetch('https://formsubmit.co/ajax/info@ssrgroupcivil.in', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || String(j.success) !== 'true') throw new Error('not sent'); }); })
+      .then(function () { say('Thank you, ' + d.name.split(' ')[0] + '. Your enquiry has reached SSR; we will get back to you on ' + d.phone + '.'); })
+      .catch(function () { say('We could not send this by email just now. Tap “Send on WhatsApp” and it goes straight to Sankalp.', true); })
+      .then(function () { btn.disabled = false; });
+  });
   $('#wa-models').href = waHref('Hi Sankalp, I saw ssrgroupcivil.in and want to talk about a 3D model page for my project.\n\n(sent from ssrgroupcivil.in)');
+  $('#wa-bar').href = waHref('Hi Sankalp, I saw ssrgroupcivil.in and want to talk about a project.\n\n(sent from ssrgroupcivil.in)');
   $('#wa-top').href = waHref('Hi Sankalp, I saw ssrgroupcivil.in and want to talk about a project.\n\n(sent from ssrgroupcivil.in)');
 
   renderBag();
