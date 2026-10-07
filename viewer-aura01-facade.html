@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AURA01 Façade 3D — SSR Group Civil</title>
+<meta name="description" content="AURA01, a G+3 residence on a corner plot in Kiradi, Delhi: the issued façade scheme as a live 3D model.">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<style>#bInfo,#bShot{display:none!important}</style>
+<style>
+  /* layout: full-bleed WebGL stage, fixed navy title bar, pill dock at the foot */
+  :root{--navy:#0f2447;--gold:#c9a227;--ink:#1b2733;--paper:#f6f4ee;--line:#d4d8de;--muted:#5b6b7d;--bg:#e6ebf1;--chip:rgba(255,255,255,.93);--chipb:#b8c2d0;--field:#fff}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#e8ebf1;--paper:#1a2230;--line:#33405a;--muted:#9fb0cc;--bg:#141b28;--chip:rgba(26,34,48,.93);--chipb:#3a4a66;--field:#0f1520;color-scheme:dark}}
+  :root[data-theme="dark"]{--ink:#e8ebf1;--paper:#1a2230;--line:#33405a;--muted:#9fb0cc;--bg:#141b28;--chip:rgba(26,34,48,.93);--chipb:#3a4a66;--field:#0f1520;color-scheme:dark}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  canvas{display:block}
+  #bar{position:fixed;top:0;left:0;right:0;z-index:10;background:var(--navy);border-bottom:2px solid var(--gold);
+       padding:8px 14px;padding-top:calc(8px + env(safe-area-inset-top,0px));display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  #bar .co{color:var(--gold);font-weight:700;letter-spacing:.14em;font-size:13px;white-space:nowrap}
+  #bar .ref{color:#c7d2e4;font-size:10px;text-align:right;line-height:1.35}
+  #bar .ref b{color:#fff;font-weight:600}
+  #dock{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:10;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+  .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;pointer-events:auto}
+  .btn{border:1px solid var(--chipb);background:var(--chip);color:var(--ink);font-size:12px;font-weight:600;
+       padding:7px 11px;border-radius:999px;cursor:pointer;user-select:none;backdrop-filter:blur(4px);min-height:32px}
+  .btn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .btn.lvl.on{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+  .btn.gold{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+  .btn:active{transform:scale(.96)}
+  .btn:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  #hint{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(98px + env(safe-area-inset-bottom,0px));z-index:9;color:var(--muted);font-size:11px;
+        background:var(--chip);padding:4px 12px;border-radius:999px;transition:opacity 1s;pointer-events:none;max-width:92vw;text-align:center}
+  #legend{position:fixed;right:10px;top:calc(58px + env(safe-area-inset-top,0px));z-index:9;background:var(--chip);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:10.5px;line-height:1.5;color:var(--ink);backdrop-filter:blur(4px);max-width:190px}
+  #legend b{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  #legend i{display:inline-block;width:11px;height:11px;border-radius:3px;border:1px solid #0002;vertical-align:-2px;margin-right:5px}
+  body.dusk #legend,body.dusk #hint{background:rgba(20,30,50,.85);color:#e6e8ee;border-color:#2c3a55}
+  body.dusk #legend b{color:#9fb0cc}
+  dialog{margin:auto;width:min(720px,96vw);max-height:90dvh;border:0;border-radius:12px;padding:0;background:var(--paper);color:var(--ink);overflow:hidden}
+  dialog[open]{display:flex;flex-direction:column}
+  dialog::backdrop{background:#0f2447dd}
+  dialog header{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--navy);color:#fff;padding:12px 16px;flex:none}
+  dialog header strong{font-size:15px}
+  dialog .body{overflow:auto;padding:12px 16px;font-size:12px;line-height:1.5;overscroll-behavior:contain}
+  dialog h3{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  dialog h3:first-child{margin-top:0}
+  textarea{width:100%;min-height:120px;font:11px ui-monospace,Menlo,monospace;padding:8px;border:1px solid var(--chipb);border-radius:6px;background:var(--field);resize:vertical;color:var(--ink)}
+  .pbtn{border:1px solid var(--chipb);background:var(--field);font:600 11px -apple-system,"Segoe UI",Roboto,sans-serif;padding:6px 10px;border-radius:999px;cursor:pointer;color:var(--navy);min-height:30px}
+  .pbtn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+  #shotImg{width:100%;height:auto;border:1px solid var(--line);border-radius:6px;background:#000}
+  .acts{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:6px 0 4px}
+  .st{font-size:11px;color:var(--muted)}
+  .note{font-size:10.5px;color:var(--muted);line-height:1.5}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th,td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+  @media(prefers-reduced-motion:reduce){#hint{transition:none}}
+  @media(max-width:560px){#legend{display:none}#bar .ref{font-size:9px}}
+</style>
+</head>
+<body>
+<div id="bar">
+  <div class="co">SSR GROUP CIVIL</div>
+  <div class="ref"><b>AURA01 — G+3 · FAÇADE FINISH SCHEME · LIVE 3D</b><br>18'×32' corner plot · Kiradi · Doc. SSR:F:2026:650<br>Charcoal porcelain · Ivory emulsion · Charcoal metalwork</div>
+</div>
+<div id="legend">
+  <b>Finish key</b>
+  <div><i style="background:#3c3f44"></i>Charcoal tile 600×1200 — GF, side pier, parapet</div>
+  <div><i style="background:#f1ead8"></i>Ivory exterior emulsion — F1–F3, fascias, soffits</div>
+  <div><i style="background:#8f918e"></i>Grey stone skirting 1'-6"</div>
+  <div><i style="background:#2a2d31"></i>Charcoal frames, railings, fluted MS gate</div>
+</div>
+<div id="dock">
+  <div class="row">
+    <div class="btn lvl on" data-l="ALL">All</div><div class="btn lvl" data-l="GF">GF</div>
+    <div class="btn lvl" data-l="F1">F1</div><div class="btn lvl" data-l="F2">F2</div>
+    <div class="btn lvl" data-l="F3">F3</div><div class="btn lvl" data-l="RF">Roof</div>
+    <div class="btn" id="bExp">Explode</div><div class="btn" id="bSpin">Spin</div>
+  </div>
+  <div class="row">
+    <div class="btn on" data-v="corner">Corner</div><div class="btn" data-v="front">Front</div><div class="btn" data-v="side">Side</div>
+    <div class="btn" data-v="gate">Gate</div><div class="btn" data-v="iso">Iso</div><div class="btn" data-v="top">Top</div>
+    <div class="btn" id="bDusk">Dusk</div><div class="btn gold" id="bShot">Capture PNG</div><div class="btn" id="bInfo">Scheme &amp; prompts</div>
+  </div>
+</div>
+<div id="hint">Drag to rotate · pinch to zoom · tap a floor or a view below</div>
+
+<dialog id="dlg" aria-labelledby="dlgT">
+  <header><strong id="dlgT">AURA01 façade scheme</strong><button class="pbtn" id="dlgX">Close</button></header>
+  <div class="body">
+    <h3>Tile area statement (Doc. SSR:F:2026:650 R1)</h3>
+    <table>
+      <thead><tr><th>Zone</th><th>Element</th><th class="r">Net sq ft</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td>GF wall cladding — front 18' + side 32' × 9'-0" band, less gate, door, window; reveals added</td><td class="r">385</td></tr>
+        <tr><td>B</td><td>Side-road feature pier 8'-10" × 30'-0", less 3 windows; reveals added</td><td class="r">245</td></tr>
+        <tr><td>C</td><td>Roof parapet band 56' × 3'-6"</td><td class="r">196</td></tr>
+        <tr><td></td><td><b>Charcoal tile net · order qty (+7.5 %)</b></td><td class="r"><b>826 · ≈ 890 (58 boxes)</b></td></tr>
+        <tr><td>D</td><td>Grey stone skirting 50' × 1'-6", less gate & door</td><td class="r">63 · ≈ 68 (5 boxes)</td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="margin-top:6px">Everything not listed above — upper-floor walls, balcony fascias and soffits, columns, mumty — is ivory exterior emulsion. Metalwork: charcoal powder coat / PU.</p>
+
+    <h3>Render prompts — one per view</h3>
+    <p class="note">Select the view with the buttons, tap <b>Capture PNG</b>, then attach that PNG to GPT / Runway / any image AI with the matching prompt below. The geometry in the capture is the truth; the prompt fixes the finishes.</p>
+    <div class="acts"><button class="pbtn primary" data-p="corner">Corner (dusk)</button><button class="pbtn" data-p="front">Front (day)</button><button class="pbtn" data-p="side">Side road</button><button class="pbtn" data-p="gate">Gate close-up</button><span class="st" id="pst"></span></div>
+    <textarea id="ptxt" readonly style="min-height:190px"></textarea>
+    <div class="acts"><button class="pbtn primary" id="pcopy">Copy prompt</button><span class="st" id="cst"></span></div>
+  </div>
+</dialog>
+
+<dialog id="shot" aria-labelledby="shotT">
+  <header><strong id="shotT">Captured view</strong><button class="pbtn" id="shotX">Close</button></header>
+  <div class="body">
+    <img id="shotImg" alt="Captured view of the AURA01 model">
+    <div class="acts"><a class="pbtn primary" id="shotDl" href="#" download="AURA01_view.png" hidden>Download PNG</a><span class="st">Long-press (phone) or right-click (desktop) the image and save it, then attach it to the matching render prompt.</span></div>
+  </div>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+if(!window.THREE){document.getElementById('hint').textContent='The 3D viewer could not load. Connect to the internet and reload.';}
+if(window.THREE){
+// ================= scene =================
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(46,innerWidth/innerHeight,1,900);
+const MOBILE=Math.min(innerWidth,innerHeight)<700||/Android|iPhone|iPad/i.test(navigator.userAgent);
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=MOBILE?THREE.PCFShadowMap:THREE.PCFSoftShadowMap;renderer.physicallyCorrectLights=false;
+renderer.setSize(innerWidth,innerHeight);document.body.appendChild(renderer.domElement);
+let needsRender=true;
+
+const hemi=new THREE.HemisphereLight(0xdfe9ff,0x8a8a80,.55);scene.add(hemi);
+const amb=new THREE.AmbientLight(0xffffff,.22);scene.add(amb);
+const sun=new THREE.DirectionalLight(0xfff1dc,1.15);sun.position.set(45,90,75);sun.castShadow=true;
+sun.shadow.mapSize.set(MOBILE?1536:3072,MOBILE?1536:3072);sun.shadow.bias=-.0003;sun.shadow.normalBias=.04;
+const sc=sun.shadow.camera;sc.left=-52;sc.right=52;sc.top=62;sc.bottom=-36;sc.near=10;sc.far=260;scene.add(sun);sun.target.position.set(10.5,10,17.5);scene.add(sun.target);
+const fill=new THREE.DirectionalLight(0xcfe0ff,.25);fill.position.set(-60,40,-30);scene.add(fill);
+
+// ================= textures (procedural, sRGB) =================
+function rnd(k){return Math.abs(Math.sin(k*127.1+17.2)*43758.5453)%1}
+function grain(q,W,H,n,a1,a2){for(let k=0;k<n;k++){q.fillStyle=k%2?'rgba(255,255,255,'+a1+')':'rgba(30,26,22,'+a2+')';q.fillRect(rnd(k)*W,rnd(k+9)*H,1.4,1.4);}}
+function texOf(draw,W=1024,H=1024){const c=document.createElement('canvas');c.width=W;c.height=H;draw(c.getContext('2d'),W,H);
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.encoding=THREE.sRGBEncoding;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());t.minFilter=THREE.LinearMipmapLinearFilter;return t;}
+// 4 ft × 4 ft repeat. Charcoal 600×1200 laid horizontally = 4' long × 2' high, 1/2 running bond
+const TEX_CHAR=texOf((q,W,H)=>{q.fillStyle='#35383d';q.fillRect(0,0,W,H);
+  for(let r=0;r<2;r++){const off=r?W/2:0;for(let c=-1;c<2;c++){const x=c*W+off,y=r*H/2;
+    const sh=['#3b3e43','#393c41','#3e4146'][(c+r+3)%3];q.fillStyle=sh;q.fillRect(x+2,y+2,W-4,H/2-4);
+    q.fillStyle='rgba(255,255,255,.035)';q.fillRect(x+2,y+2,W-4,4);q.fillStyle='rgba(0,0,0,.25)';q.fillRect(x+2,y+H/2-6,W-4,4);}}
+  grain(q,W,H,9000,.03,.06);q.strokeStyle='rgba(14,14,16,.85)';q.lineWidth=5;
+  q.strokeRect(1.5,1.5,W-3,H/2-3);q.strokeRect(1.5,H/2+1.5,W-3,H/2-3);q.beginPath();q.moveTo(W/2,H/2);q.lineTo(W/2,H);q.moveTo(0,0);q.lineTo(0,H/2);q.stroke();});
+const TEX_IVORY=texOf((q,W,H)=>{q.fillStyle='#efe8d6';q.fillRect(0,0,W,H);grain(q,W,H,5000,.05,.035);
+  for(let k=0;k<160;k++){q.fillStyle='rgba(120,100,70,.04)';q.beginPath();q.arc(rnd(k+33)*W,rnd(k+77)*H,6+rnd(k)*18,0,7);q.fill();}});
+const TEX_STONE=texOf((q,W,H)=>{q.fillStyle='#8e908d';q.fillRect(0,0,W,H);
+  for(let k=0;k<420;k++){q.fillStyle=k%2?'rgba(255,255,255,.10)':'rgba(30,30,30,.16)';q.beginPath();q.arc(rnd(k+5)*W,rnd(k+11)*H,2+rnd(k+3)*10,0,7);q.fill();}
+  grain(q,W,H,4000,.08,.1);q.strokeStyle='rgba(40,40,40,.55)';q.lineWidth=3;q.strokeRect(1.5,1.5,W/2-3,H/2-3);q.strokeRect(W/2+1.5,1.5,W/2-3,H/2-3);q.strokeRect(1.5,H/2+1.5,W/2-3,H/2-3);q.strokeRect(W/2+1.5,H/2+1.5,W/2-3,H/2-3);});
+const TEX_ROAD=texOf((q,W,H)=>{q.fillStyle='#6d6f72';q.fillRect(0,0,W,H);grain(q,W,H,6000,.06,.12);});
+const TEX_PAVE=texOf((q,W,H)=>{q.fillStyle='#c9c6bd';q.fillRect(0,0,W,H);grain(q,W,H,3000,.06,.08);q.strokeStyle='rgba(80,80,80,.35)';q.lineWidth=2;
+  for(let i=0;i<4;i++)for(let j=0;j<4;j++)q.strokeRect(i*W/4+1,j*H/4+1,W/4-2,H/4-2);});
+const TEX_FLUTE=texOf((q,W,H)=>{q.fillStyle='#26282c';q.fillRect(0,0,W,H);const s=W/24;for(let i=0;i<24;i++){q.fillStyle='#1a1c1f';q.fillRect(i*s,0,s*.35,H);q.fillStyle='#3a3d42';q.fillRect(i*s+s*.65,0,s*.12,H);}});
+const TEX_NEIGH=texOf((q,W,H)=>{q.fillStyle='#d8cfbc';q.fillRect(0,0,W,H);grain(q,W,H,5000,.05,.08);for(let k=0;k<50;k++){q.fillStyle='rgba(90,70,40,.08)';q.fillRect(rnd(k+1)*W,rnd(k+2)*H,30+rnd(k)*60,4+rnd(k+8)*30);}});
+
+// environment for reflections: a soft sky/ground cube
+function envCube(){const faces=[];for(let i=0;i<6;i++){const c=document.createElement('canvas');c.width=c.height=64;const q=c.getContext('2d');
+  const gr=q.createLinearGradient(0,0,0,64);if(i===2){gr.addColorStop(0,'#cfe0f5');gr.addColorStop(1,'#cfe0f5');}else if(i===3){gr.addColorStop(0,'#7a7568');gr.addColorStop(1,'#7a7568');}else{gr.addColorStop(0,'#c8dcf3');gr.addColorStop(.55,'#e9ebe6');gr.addColorStop(1,'#8f8a7e');}
+  q.fillStyle=gr;q.fillRect(0,0,64,64);faces.push(c);}const t=new THREE.CubeTexture(faces);t.encoding=THREE.sRGBEncoding;t.needsUpdate=true;return t;}
+scene.environment=envCube();
+const std=(o)=>new THREE.MeshStandardMaterial(Object.assign({roughness:.9,metalness:0,envMapIntensity:.55},o));
+const M={
+ char:std({map:TEX_CHAR,bumpMap:TEX_CHAR,bumpScale:.02,roughness:.55,metalness:.08,envMapIntensity:.9}),
+ ivory:std({map:TEX_IVORY,roughness:.95}),
+ stone:std({map:TEX_STONE,roughness:.85}),
+ metal:std({color:0x2a2d31,roughness:.4,metalness:.6,envMapIntensity:.8}),
+ flute:std({map:TEX_FLUTE,roughness:.5,metalness:.4}),
+ glass:new THREE.MeshStandardMaterial({color:0x7d97ab,roughness:.05,metalness:.75,transparent:true,opacity:.7,emissive:0x000000,envMapIntensity:1.3}),
+ inner:std({color:0xf3f0ea,roughness:.95}),
+ slab:std({map:TEX_IVORY,roughness:.95}),
+ soffit:std({map:TEX_IVORY,roughness:.95}),
+ door:std({color:0x8a5a2b,roughness:.7}),
+ step:std({map:TEX_PAVE,roughness:.9}),
+ wood:std({color:0xb07a3e,roughness:.7}),
+ bed:std({color:0xd9b8a2}),
+ white:std({color:0xfafafa}),
+ tank:std({color:0x2e5a3c,roughness:.6}),
+ car:std({color:0x2b2f36,roughness:.4,metalness:.5}),
+ road:std({map:TEX_ROAD,roughness:.95}),
+ pave:std({map:TEX_PAVE,roughness:.9}),
+ ground:std({color:0xb8b2a4,roughness:1}),
+ neigh:std({map:TEX_NEIGH,roughness:.95}),
+ leaf:std({color:0x4f7a3a,roughness:.9}),
+ trunk:std({color:0x5a4634}),
+ lamp:new THREE.MeshStandardMaterial({color:0xffe9b8,emissive:0xffd08a,emissiveIntensity:0}),
+ bulb:new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffe3a8,emissiveIntensity:0})
+};
+[M.char,M.ivory,M.stone,M.slab,M.soffit].forEach(m=>{m.map.repeat.set(1,1)});
+M.stone.map.repeat.set(1,1);
+
+// tile-scale UVs: 4 ft per repeat on vertical faces, mapped in world (building) feet so joints line up between pieces
+function worldUV(mesh,coords,rep){worldUVg(mesh.geometry,coords,rep);}
+function worldUVg(g,coords,rep){
+  const [x1,x2,zb,zt,z1,z2]=coords,p=g.attributes.position,n=g.attributes.normal,uv=g.attributes.uv;
+  for(let i=0;i<p.count;i++){
+    const x=p.getX(i)+(x1+x2)/2,y=p.getY(i)+(zb+zt)/2,z=p.getZ(i)+(z1+z2)/2;
+    if(Math.abs(n.getY(i))>.5)uv.setXY(i,x/rep,z/rep);else uv.setXY(i,(Math.abs(n.getX(i))>.5?z:x)/rep,y/rep);
+  }uv.needsUpdate=true;
+}
+// ================= geometry (AURA01 model, Drg. SSR:F:2026:300/400/500/600) =================
+// Every piece is collected per material and merged into ONE mesh per material per floor — a few dozen draw calls instead of thousands.
+function newBuilder(){const grp=new THREE.Group();return {grp,buckets:new Map(),add:o=>grp.add(o),
+  geo(geom,mat){let b=this.buckets.get(mat);if(!b){b=[];this.buckets.set(mat,b);}b.push(geom.index?geom.toNonIndexed():geom);}};}
+function finalize(b){
+  b.buckets.forEach((list,mat)=>{
+    let n=0;list.forEach(g=>n+=g.attributes.position.count);
+    const pos=new Float32Array(n*3),nor=new Float32Array(n*3),uv=new Float32Array(n*2);let o=0;
+    list.forEach(g=>{const c=g.attributes.position.count;pos.set(g.attributes.position.array,o*3);nor.set(g.attributes.normal.array,o*3);if(g.attributes.uv)uv.set(g.attributes.uv.array,o*2);o+=c;g.dispose();});
+    const geom=new THREE.BufferGeometry();geom.setAttribute('position',new THREE.BufferAttribute(pos,3));geom.setAttribute('normal',new THREE.BufferAttribute(nor,3));geom.setAttribute('uv',new THREE.BufferAttribute(uv,2));
+    const m=new THREE.Mesh(geom,mat);m.castShadow=mat!==M.glass;m.receiveShadow=true;m.frustumCulled=true;b.grp.add(m);});
+  b.buckets.clear();return b.grp;
+}
+function box(g,x1,x2,zb,zt,y1,y2,mat){
+  if(x2-x1<=0.01||zt-zb<=0.01||y2-y1<=0.01)return;
+  const geom=new THREE.BoxGeometry(x2-x1,zt-zb,y2-y1);
+  if(mat===M.char||mat===M.ivory||mat===M.stone||mat===M.slab)worldUVg(geom,[x1,x2,zb,zt,y1,y2],mat===M.stone?2:4);
+  geom.translate((x1+x2)/2,(zb+zt)/2,(y1+y2)/2);g.geo(geom,mat);
+}
+function prim(g,geom,mat,x,y,z,ry){if(ry)geom.rotateY(ry);geom.translate(x,y,z);g.geo(geom,mat);}
+// exterior test — the piece sits on the outer wall line
+const inX=(x1,x2,a,b)=>x1>=a-.05&&x2<=b+.05, inY=(y1,y2,a,b)=>y1>=a-.05&&y2<=b+.05;
+function isExt(x1,x2,y1,y2){return inX(x1,x2,0,.5)||inX(x1,x2,17.2,18.1)||inX(x1,x2,20.5,21.1)||inY(y1,y2,0,.5)||inY(y1,y2,31.2,32.1)||(inY(y1,y2,10.3,10.8)&&x1>=17.6)||(inY(y1,y2,19.2,19.7)&&x1>=17.9);}
+let CUR_LEVEL='GF';
+function wallMat(x1,x2,y1,y2){
+  if(!isExt(x1,x2,y1,y2))return M.inner;
+  if(CUR_LEVEL==='GF')return M.char;                 // Zone A — charcoal base
+  if(x1>=20.5&&y1>=10.3&&y2<=19.7)return M.char;      // Zone B — side-road pier
+  return M.ivory;                                     // Zone E — ivory emulsion
+}
+function frame(g,ax,a1,a2,zb,zt,c,t){ // charcoal frame ring around an opening (t = member width)
+  const d=.16;
+  if(ax){box(g,a1,a1+t,zb,zt,c-d,c+d,M.metal);box(g,a2-t,a2,zb,zt,c-d,c+d,M.metal);box(g,a1,a2,zt-t,zt,c-d,c+d,M.metal);box(g,a1,a2,zb,zb+t,c-d,c+d,M.metal);}
+  else{box(g,c-d,c+d,zb,zt,a1,a1+t,M.metal);box(g,c-d,c+d,zb,zt,a2-t,a2,M.metal);box(g,c-d,c+d,zt-t,zt,a1,a2,M.metal);box(g,c-d,c+d,zb,zb+t,a1,a2,M.metal);}
+}
+function wall(g,r,ops,H,matOverride){
+  const [x1,y1,x2,y2]=r,ax=(x2-x1)>=(y2-y1),a0=ax?x1:y1,aE=ax?x2:y2;
+  const mat=matOverride||wallMat(x1,x2,y1,y2);
+  const seg=(s,e,zb,zt)=>{ax?box(g,s,e,zb,zt,y1,y2,mat):box(g,x1,x2,zb,zt,s,e,mat)};
+  let cur=a0;
+  (ops||[]).slice().sort((p,q)=>p.a1-q.a1).forEach(o=>{
+    seg(cur,o.a1,0,H);
+    if(o.z1>0)seg(o.a1,o.a2,0,o.z1);
+    if(o.z2<H)seg(o.a1,o.a2,o.z2,H);
+    const c=ax?(y1+y2)/2:(x1+x2)/2;
+    const pane=(zb,zt,m)=>{ax?box(g,o.a1,o.a2,zb,zt,c-.05,c+.05,m):box(g,c-.05,c+.05,zb,zt,o.a1,o.a2,m)};
+    if(o.t==='win'){pane(o.z1,o.z2,M.glass);frame(g,ax,o.a1,o.a2,o.z1,o.z2,c,.14);
+      // mullion
+      const mid=(o.a1+o.a2)/2;ax?box(g,mid-.06,mid+.06,o.z1,o.z2,c-.16,c+.16,M.metal):box(g,c-.16,c+.16,o.z1,o.z2,mid-.06,mid+.06,M.metal);
+      // sill
+      ax?box(g,o.a1-.15,o.a2+.15,o.z1-.2,o.z1,c-.5,c+.5,mat===M.char?M.stone:M.ivory):box(g,c-.5,c+.5,o.z1-.2,o.z1,o.a1-.15,o.a2+.15,mat===M.char?M.stone:M.ivory);}
+    if(o.t==='door'){pane(o.z1||0,Math.min(o.z2||8,H),M.glass);frame(g,ax,o.a1,o.a2,o.z1||0,Math.min(o.z2||8,H),c,.15);
+      const mid=(o.a1+o.a2)/2;ax?box(g,mid-.06,mid+.06,0,Math.min(o.z2||8,H),c-.16,c+.16,M.metal):box(g,c-.16,c+.16,0,Math.min(o.z2||8,H),mid-.06,mid+.06,M.metal);}
+    if(o.t==='ms')pane(o.z1,o.z2,M.flute);
+    if(o.t==='xdoor'){pane(o.z1,o.z2,M.flute);}
+    cur=o.a2;
+  });
+  seg(cur,aE,0,H);
+}
+function doorLeaf(g,d,H,mat){
+  const h=Math.min(d.h||6,H),geom=new THREE.BoxGeometry(d.len,h,.12);geom.translate(d.len/2,h/2,0);geom.rotateY(d.rot);geom.translate(d.hx,0,d.hz);g.geo(geom,mat||M.door);
+}
+function stair(g,rise){
+  for(let i=0;i<7;i++)box(g,.375,4.06,(i+1)*rise-rise,(i+1)*rise,7-(i+1)*.667,7-i*.667,M.step);
+  box(g,.375,7.75,8*rise-.5,8*rise,.375,2.333,M.step);
+  for(let i=0;i<7;i++)box(g,4.06,7.75,8*rise+i*rise,8*rise+(i+1)*rise,2.333+i*.667,2.333+(i+1)*.667,M.step);
+}
+function label(g,t,x,y,z,s){
+  const c=document.createElement('canvas');c.width=512;c.height=128;const q=c.getContext('2d');
+  q.font='700 46px -apple-system,Segoe UI,Roboto,sans-serif';q.textAlign='center';q.textBaseline='middle';q.lineWidth=10;q.strokeStyle='rgba(255,255,255,.9)';
+  q.strokeText(t,256,64);q.fillStyle='#0e2240';q.fillText(t,256,64);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false}));
+  sp.scale.set(s,s/4,1);sp.position.set(x,y,z);sp.userData.isLabel=true;g.add(sp);
+}
+const colsUpper=[[0,0,1,.75],[9.75,0,10.5,.75],[17,0,18,.75],[0,18.87,.75,19.62],[17.25,18.87,18,19.62],[0,31.25,1,32],[9.75,31.25,10.5,32]];
+const colsGF=colsUpper.concat([[9.75,18.87,10.5,19.62],[17.25,31.25,18,32]]);
+function colMat(c){ if(CUR_LEVEL==='GF')return isExt(c[0],c[2],c[1],c[3])?M.char:M.inner; return isExt(c[0],c[2],c[1],c[3])?M.ivory:M.inner; }
+
+const soffitLights=[];
+function slabPlate(g,zTop){
+  box(g,0,21,zTop-.42,zTop,0,35,M.slab);
+  [[18,0,21,10.38],[18,19.62,21,32],[0,32,21,35]].forEach(b=>box(g,b[0],b[2],zTop+.005,zTop+.035,b[1],b[3],M.step));
+  // recessed downlights in balcony soffits
+  [[19.5,5],[19.5,26],[5,33.5],[10.5,33.5],[16,33.5]].forEach(([x,z])=>prim(g,new THREE.CylinderGeometry(.22,.22,.05,12),M.bulb,x,zTop-.44,z));
+  (g.lightsAt||[]).forEach(([x,z])=>{const L=new THREE.PointLight(0xffd39a,0,18,2);L.position.set(x,zTop-1,z);g.add(L);soffitLights.push(L);});
+}
+function rails(g){
+  const runs=[{ax:'y',c:20.92,a:.15,b:10.38},{ax:'y',c:20.92,a:19.62,b:34.85},{ax:'x',c:34.92,a:0,b:21},{ax:'y',c:0.08,a:32,b:34.85},{ax:'x',c:0.08,a:18,b:21}];
+  runs.forEach(r=>{
+    const rail=(zb,zt,t)=>{r.ax==='x'?box(g,r.a,r.b,zb,zt,r.c-t,r.c+t,M.metal):box(g,r.c-t,r.c+t,zb,zt,r.a,r.b,M.metal)};
+    rail(3.35,3.5,.09);rail(0.25,0.35,.06);
+    const n=Math.max(1,Math.round((r.b-r.a)/.42));
+    for(let i=0;i<=n;i++){const u=r.a+(r.b-r.a)*i/n;r.ax==='x'?box(g,u-.04,u+.04,0.35,3.35,r.c-.04,r.c+.04,M.metal):box(g,r.c-.04,r.c+.04,0.35,3.35,u-.04,u+.04,M.metal);}
+  });
+}
+function toiletFit(g){box(g,1.55,2.5,0,1.3,29.3,30.8,M.white);box(g,.55,1.6,2.2,2.7,20.2,21.4,M.white);}
+function buildF1(){
+  CUR_LEVEL='F1';const g=newBuilder();const H=10;
+  const W=[{r:[0.75,0,9.75,.375]},{r:[10.5,0,17.25,.375]},{r:[0,0.75,.375,31.25]},{r:[7.75,.375,8.125,10.75]},
+   {r:[.375,10.375,4.76,10.75],op:[{a1:.84,a2:3.37,z1:0,z2:7,t:'ms'}]},{r:[4.38,10.75,4.76,15.12]},{r:[.375,14.75,4.76,15.12]},
+   {r:[17.63,10.375,21,10.75]},{r:[20.625,10.75,21,19.62],op:[{a1:12.75,a2:16.76,z1:3.5,z2:6.5,t:'win'}]},{r:[18,19.25,21,19.62]},
+   {r:[3.25,19.25,6.125,19.62]},{r:[5.75,19.62,6.125,31.625]},
+   {r:[17.625,1.0,18,10.375],op:[{a1:1.75,a2:5.75,z1:3.5,z2:6.5,t:'win'},{a1:7.87,a2:10.375,z1:0,z2:8,t:'door'}]},
+   {r:[17.625,19.62,18,31.625],op:[{a1:23.25,a2:27.25,z1:3.5,z2:6.5,t:'win'}]},
+   {r:[0.75,31.625,18,32],op:[{a1:2.25,a2:4.26,z1:4.5,z2:7.5,t:'win'},{a1:6.125,a2:9.125,z1:0,z2:8,t:'door'},{a1:12.375,a2:15.375,z1:3.5,z2:7.5,t:'win'}]}];
+  W.forEach(w=>wall(g,w.r,w.op,H));
+  wall(g,[0.75,19.25,3.25,19.62],[{a1:0.75,a2:3.25,z1:0,z2:8,t:'door'}],H);
+  colsUpper.forEach(c=>box(g,c[0],c[2],0,H,c[1],c[3],colMat(c)));
+  [{hx:4.75,hz:10.5625,len:3,rot:-0.68},{hx:0.75,hz:19.435,len:2.5,rot:-0.68}].forEach(d=>doorLeaf(g,d,H));
+  stair(g,0.667);
+  box(g,8.5,17.6,0,2.8,0.45,2.2,M.wood);box(g,15.9,17.6,0,2.8,2.2,7.87,M.wood);box(g,9.5,14.5,2.2,2.5,13.8,16.8,M.wood);box(g,11.8,12.2,0,2.2,15.1,15.5,M.wood);
+  box(g,10.3,16.45,0,1.35,27.25,30.95,M.bed);box(g,12.1,14.6,0,1.15,25.6,26.8,M.wood);toiletFit(g);
+  label(g,'KITCHEN',12.8,7.5,5.3,5.2);label(g,'DINING',11.4,7.5,15.4,4.6);label(g,'DRAWING ROOM',11.5,7.5,25.4,6.4);label(g,'TOILET',3,7.5,25.4,4.2);label(g,'LIFT',2.4,7.5,12.9,3.4);
+  rails(g);return finalize(g);
+}
+function buildF23(id){
+  CUR_LEVEL=id;const g=newBuilder();const H=10;
+  const W=[{r:[0.75,0,9.75,.375]},{r:[10.5,0,17.25,.375]},{r:[0,0.75,.375,31.25]},{r:[7.75,.375,8.125,10.75]},
+   {r:[.375,10.375,4.76,10.75],op:[{a1:.84,a2:3.37,z1:0,z2:7,t:'ms'}]},{r:[4.38,10.75,4.76,15.12]},{r:[.375,14.75,4.76,15.12]},
+   {r:[8.125,10.375,21,10.75],op:[{a1:8.125,a2:11.125,z1:0,z2:8,t:'door'}]},{r:[20.625,10.75,21,19.62],op:[{a1:13.25,a2:17.26,z1:3.5,z2:6.5,t:'win'}]},
+   {r:[18,19.25,21,19.62]},{r:[6.125,19.25,17.63,19.62],op:[{a1:6.125,a2:9.125,z1:0,z2:8,t:'door'}]},{r:[3.25,19.25,6.125,19.62]},{r:[5.75,19.62,6.125,31.625]},
+   {r:[17.625,1.0,18,10.375],op:[{a1:2.25,a2:6.26,z1:3.5,z2:6.5,t:'win'},{a1:7.88,a2:10.375,z1:0,z2:8,t:'door'}]},
+   {r:[17.625,19.62,18,31.625],op:[{a1:23.25,a2:27.25,z1:3.5,z2:6.5,t:'win'}]},
+   {r:[0.75,31.625,18,32],op:[{a1:2.25,a2:4.26,z1:4.5,z2:7.5,t:'win'},{a1:6.125,a2:9.125,z1:0,z2:8,t:'door'},{a1:12.375,a2:15.375,z1:3.5,z2:7.5,t:'win'}]}];
+  W.forEach(w=>wall(g,w.r,w.op,H));
+  wall(g,[0.75,19.25,3.25,19.62],[{a1:0.75,a2:3.25,z1:0,z2:8,t:'door'}],H);
+  colsUpper.forEach(c=>box(g,c[0],c[2],0,H,c[1],c[3],colMat(c)));
+  [{hx:4.75,hz:10.5625,len:3,rot:-0.68},{hx:0.75,hz:19.435,len:2.5,rot:-0.68}].forEach(d=>doorLeaf(g,d,H));
+  stair(g,0.667);box(g,19.1,20.6,0,2.8,11.4,19.2,M.wood);box(g,9.4,15.9,0,1.4,1.3,7.5,M.bed);box(g,9.9,15.6,0,1.4,22.4,30.6,M.bed);toiletFit(g);
+  label(g,'BED ROOM',12.6,7.5,5.3,5.0);label(g,'OPEN KITCHEN',17.5,7.5,15,5.8);label(g,'BED ROOM',11.6,7.5,25.4,5.0);label(g,'TOILET',3,7.5,25.4,4.2);
+  rails(g);return finalize(g);
+}
+function buildGF(){
+  CUR_LEVEL='GF';const g=newBuilder();const H=9,T=0.75;
+  const W=[{r:[0,0,18,T]},{r:[0,T,T,31.25]},
+   {r:[0,31.25,18,32],op:[{a1:2.25,a2:4.75,z1:0,z2:7,t:'xdoor'}]},
+   {r:[17.25,T,18,31.25],op:[{a1:2.5,a2:6.5,z1:3.5,z2:6.5,t:'win'},{a1:21,a2:29.5,z1:0,z2:8.5,t:'ms'}]},
+   {r:[7.75,T,8.125,8.375]},{r:[11.125,8,17.25,8.375]},
+   {r:[.375,10.375,4.76,10.75],op:[{a1:.84,a2:3.37,z1:0,z2:7,t:'ms'}]},{r:[4.38,10.75,4.76,15.12]},{r:[.375,14.75,4.76,15.12]}];
+  W.forEach(w=>wall(g,w.r,w.op,H));
+  colsGF.forEach(c=>box(g,c[0],c[2],0,H,c[1],c[3],colMat(c)));
+  // fluted MS gate leaves (slightly open) and door frame
+  frame(g,false,21,29.5,0,8.5,17.62,.18);
+  doorLeaf(g,{hx:17.62,hz:21.05,len:4.2,rot:Math.PI/2-0.35,h:8.4},H,M.flute);
+  doorLeaf(g,{hx:17.62,hz:29.45,len:4.2,rot:Math.PI/2+0.35,h:8.4},H,M.flute);
+  frame(g,true,2.25,4.75,0,7,31.81,.15);
+  stair(g,0.6);
+  box(g,10.8,16.2,0,1.9,20.2,29.2,M.car);box(g,11.6,15.4,1.9,3.1,22.4,27.2,M.car);
+  label(g,'CAR PARKING',12,6.5,15,6.2);label(g,'ROOM',12.6,6.5,4.4,4.0);label(g,'MS GATE',19.6,5.5,25.2,4.6);label(g,'STAIR',4,6.5,3.7,4.2);
+  return finalize(g);
+}
+function buildRF(){
+  CUR_LEVEL='RF';const g=newBuilder();
+  // parapet — Zone C charcoal on the two road faces (front y=35, side x=21), ivory on neighbour faces
+  box(g,0,21,0,3.5,34.625,35,M.char);box(g,20.625,21,0,3.5,.375,34.625,M.char);
+  box(g,0,21,0,3.5,0,.375,M.ivory);box(g,0,.375,0,3.5,.375,34.625,M.ivory);
+  box(g,-.05,21.05,3.5,3.75,34.575,35.05,M.stone);box(g,20.575,21.05,3.5,3.75,-.05,35.05,M.stone); // coping
+  box(g,-.05,21.05,3.5,3.75,-.05,.425,M.stone);box(g,-.05,.425,3.5,3.75,-.05,35.05,M.stone);
+  const iv=M.ivory;
+  wall(g,[0,0.375,0.375,7.4],null,7.5,iv);wall(g,[0.375,0,8.125,0.375],null,7.5,iv);
+  wall(g,[7.75,0.375,8.125,7.4],[{a1:2,a2:5,z1:0,z2:6.5,t:'door'}],7.5,iv);wall(g,[0.375,7.025,7.75,7.4],null,7.5,iv);
+  box(g,0,8.125,7.5,7.92,0,7.4,M.slab);
+  wall(g,[0,10.375,0.375,15.12],null,7.5,iv);wall(g,[4.38,10.375,4.76,15.12],null,7.5,iv);wall(g,[0.375,10.375,4.38,10.75],null,7.5,iv);
+  wall(g,[0.375,14.75,4.38,15.12],[{a1:1.2,a2:3.9,z1:0,z2:6.5,t:'ms'}],7.5,iv);
+  box(g,0,4.76,7.5,7.92,10.375,15.12,M.slab);
+  prim(g,new THREE.CylinderGeometry(1.6,1.6,2.6,24),M.tank,2.4,9.2,12.75);
+  label(g,'TERRACE',11,5,20,5.4);label(g,'MACHINE ROOM',2.4,9.4,12.75,5.6);
+  return finalize(g);
+}
+const LV=[{id:'GF',z:0,g:buildGF()},{id:'F1',z:9,g:buildF1()},{id:'F2',z:19,g:buildF23('F2')},{id:'F3',z:29,g:buildF23('F3')},{id:'RF',z:39,g:buildRF()}];
+const bldg=new THREE.Group();scene.add(bldg);
+LV.forEach((L,i)=>{L.g.name='floor-'+L.id;L.g.position.y=L.z;bldg.add(L.g);
+  if(L.id!=='GF'){const s=newBuilder();s.lightsAt=L.id==='F1'?[[19.5,26],[10.5,33.5]]:[[19.5,26]];slabPlate(s,0);const sg=finalize(s);sg.position.y=L.z;L.slab=sg;bldg.add(sg);}});
+// base / plinth / context
+const baseB=newBuilder();const base=baseB.grp;
+box(baseB,-.05,18.05,-1.5,0,-.05,32.05,M.stone);               // Zone D — grey stone skirting
+box(baseB,17.95,19.9,-1.5,-0.55,20.5,30,M.pave);               // ramp
+box(baseB,-.05,18.05,-1.55,-1.5,31.5,33.2,M.pave);             // front step/pavement strip
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(600,600),M.ground);ground.rotation.x=-Math.PI/2;ground.position.set(10.5,-1.56,17.5);ground.receiveShadow=true;base.add(ground);
+const pave=(x1,x2,y1,y2)=>{const p=new THREE.Mesh(new THREE.PlaneGeometry(x2-x1,y2-y1),M.pave);p.rotation.x=-Math.PI/2;p.position.set((x1+x2)/2,-1.54,(y1+y2)/2);p.material.map.repeat.set(1,1);p.receiveShadow=true;worldUV(p,[x1,x2,-1.54,-1.54,y1,y2],4);base.add(p);};
+const road=(x1,x2,y1,y2)=>{const p=new THREE.Mesh(new THREE.PlaneGeometry(x2-x1,y2-y1),M.road);p.rotation.x=-Math.PI/2;p.position.set((x1+x2)/2,-1.55,(y1+y2)/2);p.receiveShadow=true;base.add(p);};
+pave(-40,21.5,35,40);pave(21.5,26,-40,40);pave(-40,26,-40,0);     // footpaths
+road(-40,120,40,72);road(26,58,-120,40);                          // front road (y>40) and side road (x>26)
+// kerb lines
+box(baseB,-40,26,-1.6,-1.45,39.9,40.4,M.pave);box(baseB,25.6,26.1,-1.6,-1.45,-40,40,M.pave);
+// neighbour on the west (x<0) and behind (y<0) — plain beige buildings, set back
+const nb=(x1,x2,y1,y2,h)=>{box(baseB,x1,x2,-1.5,h,y1,y2,M.neigh);for(let z=y1+3;z<y2-2;z+=6)for(let f=1;f<=3;f++)box(baseB,x2-.02,x2+.12,f*10-6,f*10-3,z,z+2.5,M.glass);};
+nb(-22,-3,0,34,27);nb(-22,21,-30,-3,23);
+const nbE=(x1,x2,y1,y2,h)=>{box(baseB,x1,x2,-1.5,h,y1,y2,M.neigh);for(let z=y1+4;z<y2-3;z+=7)for(let f=1;f<=2;f++)box(baseB,x1-.12,x1+.02,f*10-6,f*10-3,z,z+2.5,M.glass);};
+nbE(62,84,-110,-12,22);nbE(66,90,112,150,20);nbE(30,52,74,100,22);nbE(-40,-8,74,100,26);
+// trees
+function tree(x,z,s){prim(baseB,new THREE.CylinderGeometry(.25*s,.35*s,5*s,8),M.trunk,x,-1.5+2.5*s,z);
+  prim(baseB,new THREE.IcosahedronGeometry(3.2*s,2),M.leaf,x,-1.5+6.5*s,z);prim(baseB,new THREE.IcosahedronGeometry(2.2*s,2),M.leaf,x+1.5*s,-1.5+8.3*s,z-1);}
+tree(-8,38,1.1);tree(24,-8,1.0);tree(24,44,.9);
+// street lamp at the corner
+prim(baseB,new THREE.CylinderGeometry(.14,.18,16,10),M.metal,24,6.5,37.5);prim(baseB,new THREE.BoxGeometry(3,.18,.18),M.metal,22.6,14.5,37.5);prim(baseB,new THREE.BoxGeometry(1.4,.35,.6),M.lamp,21.4,14.4,37.5);
+const lampL=new THREE.PointLight(0xffc77a,0,60,2);lampL.position.set(21.4,13.8,37.5);base.add(lampL);
+finalize(baseB);scene.add(base);
+function setLabels(g,v){g.traverse(o=>{if(o.userData&&o.userData.isLabel)o.visible=v;});}
+LV.forEach(L=>setLabels(L.g,false));
+
+// ================= sky =================
+const skyC=document.createElement('canvas');skyC.width=4;skyC.height=256;const skyQ=skyC.getContext('2d');
+const skyTex=new THREE.CanvasTexture(skyC);skyTex.encoding=THREE.sRGBEncoding;
+function paintSky(top,bot){const gr=skyQ.createLinearGradient(0,0,0,256);gr.addColorStop(0,top);gr.addColorStop(1,bot);skyQ.fillStyle=gr;skyQ.fillRect(0,0,4,256);skyTex.needsUpdate=true;}
+const sky=new THREE.Mesh(new THREE.SphereGeometry(420,24,12),new THREE.MeshBasicMaterial({map:skyTex,side:THREE.BackSide,fog:false}));sky.position.set(10.5,0,17.5);scene.add(sky);
+let dusk=false;
+function setDusk(on){dusk=on;document.body.classList.toggle('dusk',on);document.getElementById('bDusk').classList.toggle('on',on);needsRender=true;
+  if(on){paintSky('#0f1a3a','#4a5f8f');scene.fog=new THREE.Fog(0x2a3a5c,180,420);hemi.intensity=.22;hemi.color.set(0x5d7bb5);hemi.groundColor.set(0x2a2622);amb.intensity=.08;
+    sun.intensity=.18;sun.color.set(0xf0a870);sun.position.set(-70,25,60);fill.intensity=.12;renderer.toneMappingExposure=.92;
+    M.glass.emissive.set(0xffb45a);M.glass.emissiveIntensity=.9;M.glass.opacity=.85;M.bulb.emissiveIntensity=2.2;M.lamp.emissiveIntensity=2;
+    soffitLights.forEach(l=>l.intensity=1.6);lampL.intensity=1.6;}
+  else{paintSky('#7fb0e8','#e8eef6');scene.fog=new THREE.Fog(0xdfe6f0,220,460);hemi.intensity=.55;hemi.color.set(0xdfe9ff);hemi.groundColor.set(0x8a8a80);amb.intensity=.22;
+    sun.intensity=1.15;sun.color.set(0xfff1dc);sun.position.set(45,90,75);fill.intensity=.25;renderer.toneMappingExposure=1.0;
+    M.glass.emissiveIntensity=0;M.glass.opacity=.62;M.bulb.emissiveIntensity=0;M.lamp.emissiveIntensity=0;soffitLights.forEach(l=>l.intensity=0);lampL.intensity=0;}
+}
+setDusk(false);
+
+// ================= camera =================
+const target=new THREE.Vector3(10.5,16,17.5);
+let theta=.66,phi=1.36,rad=118,spin=false;let vT=theta,vP=phi,vR=rad,vY=target.y,tY=target.y,vX=target.x,vZ=target.z,tX=target.x,tZ=target.z;
+function applyCam(){camera.position.set(vX+vR*Math.sin(vP)*Math.cos(vT),vY+vR*Math.cos(vP),vZ+vR*Math.sin(vP)*Math.sin(vT));camera.lookAt(vX,vY,vZ);}
+let px=0,py=0,drag=false,pinch=0;
+const el=renderer.domElement;
+el.addEventListener('pointerdown',e=>{drag=true;px=e.clientX;py=e.clientY;spinOff();needsRender=true;});
+addEventListener('pointermove',e=>{if(!drag)return;theta+=(e.clientX-px)*.0055;phi-=(e.clientY-py)*.0045;phi=Math.max(.08,Math.min(1.56,phi));px=e.clientX;py=e.clientY;});
+addEventListener('pointerup',()=>drag=false);
+el.addEventListener('wheel',e=>{e.preventDefault();needsRender=true;rad=Math.max(12,Math.min(320,rad*(1+e.deltaY*.001)));},{passive:false});
+el.addEventListener('touchmove',e=>{if(e.touches.length===2){e.preventDefault();needsRender=true;const d2=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch)rad=Math.max(12,Math.min(320,rad*pinch/d2));pinch=d2;drag=false;}},{passive:false});
+el.addEventListener('touchend',()=>pinch=0);
+
+const VIEWS={
+  corner:{t:.66,p:1.36,r:118,x:10.5,y:16,z:17.5},
+  front:{t:1.5708,p:1.42,r:120,x:10.5,y:17,z:17.5},
+  side:{t:0.0,p:1.42,r:132,x:10.5,y:17,z:17.5},
+  gate:{t:.42,p:1.47,r:34,x:18,y:5,z:25.5},
+  iso:{t:2.35,p:1.12,r:110,x:10.5,y:20,z:17.5},
+  top:{t:1.5708,p:.09,r:135,x:10.5,y:20,z:17.5}
+};
+let curView='corner';
+window.snap=()=>{vT=theta;vP=phi;vR=rad;vX=tX;vY=tY;vZ=tZ;needsRender=true;};
+function setView(k){const v=VIEWS[k];if(!v)return;curView=k;theta=v.t;phi=v.p;rad=v.r;tX=v.x;tY=v.y;tZ=v.z;spinOff();needsRender=true;
+  document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===k));}
+document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>setView(b.dataset.v));
+const B=id=>document.getElementById(id);
+let exploded=false,level='ALL';
+function relayout(){needsRender=true;
+  LV.forEach((L,i)=>{const zz=L.z+(exploded?i*7:0);L.g.position.y=zz;if(L.slab)L.slab.position.y=zz;
+    const vis=(level==='ALL')||(level===L.id);L.g.visible=vis;if(L.slab)L.slab.visible=vis;setLabels(L.g,level===L.id||(exploded&&level==='ALL'));});
+  base.visible=(level==='ALL'||level==='GF');
+  if(level==='ALL'){tY=exploded?26:VIEWS[curView].y;rad=Math.max(rad,exploded?135:100);}
+  else{const L=LV.find(l=>l.id===level);tY=L.z+(exploded?LV.indexOf(L)*7:0)+5;if(rad>80)rad=62;}
+}
+document.querySelectorAll('.btn.lvl').forEach(b=>b.onclick=()=>{document.querySelectorAll('.btn.lvl').forEach(x=>x.classList.remove('on'));b.classList.add('on');level=b.dataset.l;relayout();});
+B('bExp').onclick=()=>{exploded=!exploded;B('bExp').classList.toggle('on',exploded);relayout();};
+function spinOff(){spin=false;B('bSpin').classList.remove('on');}
+B('bSpin').onclick=()=>{spin=!spin;B('bSpin').classList.toggle('on',spin);};
+B('bDusk').onclick=()=>setDusk(!dusk);
+setTimeout(()=>B('hint').style.opacity=0,6000);
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);needsRender=true;});
+
+// capture — re-renders at 2x for a crisp PNG
+B('bShot').onclick=()=>{const pr=renderer.getPixelRatio();renderer.setPixelRatio(Math.min(3,devicePixelRatio*2));renderer.render(scene,camera);
+  const url=renderer.domElement.toDataURL('image/png');renderer.setPixelRatio(pr);needsRender=true;
+  const nm='AURA01_'+curView+(dusk?'_dusk':'_day')+'.png';B('shotImg').src=url;B('shotDl').href=url;B('shotDl').download=nm;B('shotT').textContent='Captured — '+nm;B('shot').showModal();};
+B('shotX').onclick=()=>B('shot').close();
+
+// ================= scheme & prompts =================
+const BASE='Photorealistic architectural exterior render of a G+3 residential building in Kiradi, Delhi, on an 18 ft × 32 ft corner plot with roads on two sides. Use the attached screenshot as the exact geometry reference: same massing, floor heights (ground 9 ft, three upper floors 10 ft each), 3 ft wrap-around balconies with open mild-steel railings, solid 3 ft 6 in roof parapet, stair mumty and water tank, and the same window, door and gate positions. Do not add, move or resize any opening.\n\nFaçade finishes — exactly as follows:\n- Ground floor external walls: charcoal matt porcelain tiles 600 × 1200 mm (2 ft × 4 ft), laid horizontally in a half-offset running bond with fine dark joints, from a 1 ft 6 in grey flamed-granite skirting up to the first-floor balcony soffit\n- Vertical feature pier on the side-road elevation (between the two side balconies, with a stacked window on each floor): same charcoal 600 × 1200 tile, full height from first floor to parapet\n- Roof parapet band, front and side-road faces: same charcoal tile, 3 ft 6 in high, with a light grey stone coping\n- All upper-floor walls, balcony fascias, balcony soffits and columns: smooth ivory / pearl off-white exterior emulsion with a soft sheen (not brilliant white, not textured)\n- Balcony railings: slim charcoal mild-steel vertical bars at close spacing with flat top and bottom rails, 3 ft 6 in high, open (not solid)\n- Windows and balcony doors: slim charcoal powder-coated aluminium frames, clear glass, thin grey stone sills\n- Parking gate on the side road: 8 ft 6 in × 8 ft 6 in charcoal fluted mild-steel double leaf; pedestrian door on the front: charcoal fluted MS\n- Recessed warm-white downlights in every balcony soffit\n';
+const VIEW_TXT={
+  corner:'View: three-quarter corner view from across the road junction at eye level (about 5 ft), showing the 21 ft front face on the left and the 35 ft side face with the parking gate on the right. Blue-hour dusk: deep blue sky, interiors glowing warm through the windows, balcony soffit downlights on, a single street lamp at the corner, wet-look asphalt reflections kept subtle. Neighbouring plain beige buildings on both sides, a small tree at the corner. No people, no text, no signage, no watermarks. Matte tile look, crisp joints. 3:4 portrait, 4K, architectural visualisation quality.',
+  front:'View: straight-on front elevation from the middle of the front road at eye level, camera level (no vertical convergence), the whole 21 ft face centred with the neighbouring buildings cut off at the edges. Clear mid-morning daylight, sun from the upper left casting soft balcony shadows on the ivory walls, clear blue sky. Front pedestrian door at ground level on the left in charcoal fluted MS. No people, no text, no signage, no watermarks. 3:4 portrait, 4K, architectural visualisation quality.',
+  side:'View: straight-on side-road elevation from across the side road at eye level, camera level, the full 35 ft face centred: parking gate on the left, ground-floor window on the right, the charcoal vertical pier with three stacked windows running from first floor to parapet, ivory balcony faces either side. Overcast soft daylight, neutral shadows, parked cars and trees along the far side of the street. No people, no text, no signage, no watermarks. 4:3 landscape, 4K, architectural visualisation quality.',
+  gate:'View: close-up of the parking entrance from the footpath, three-quarter angle, eye level about 4 ft, gate leaves ajar showing the tiled parking interior. Fill the frame with the charcoal fluted MS gate, the 600 × 1200 charcoal tile with tiled reveals, the grey stone skirting and ramp, and the ivory first-floor balcony soffit with a recessed downlight above. Late-afternoon warm sunlight raking across the fluting, a few dry leaves on the paving. No people, no text, no signage, no watermarks. 4:5 portrait, 4K, product-photography sharpness.'
+};
+const dlg=B('dlg');B('bInfo').onclick=()=>{setPrompt('corner');dlg.showModal();};B('dlgX').onclick=()=>dlg.close();
+function setPrompt(k){B('ptxt').value=BASE+'\n'+VIEW_TXT[k];B('pst').textContent='— '+k+' view';document.querySelectorAll('[data-p]').forEach(b=>b.classList.toggle('primary',b.dataset.p===k));}
+document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>setPrompt(b.dataset.p));
+B('pcopy').onclick=()=>{const t=B('ptxt').value,st=B('cst');const done=()=>{st.textContent='Copied';setTimeout(()=>st.textContent='',1800);};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,()=>{B('ptxt').select();st.textContent='Select and copy manually';});else{B('ptxt').select();st.textContent='Select and copy manually';}};
+
+(function loop(){requestAnimationFrame(loop);
+  if(spin)theta+=.003;
+  const moving=spin||drag||Math.abs(theta-vT)>1e-4||Math.abs(phi-vP)>1e-4||Math.abs(rad-vR)>1e-3||Math.abs(tY-vY)>1e-3||Math.abs(tX-vX)>1e-3||Math.abs(tZ-vZ)>1e-3;
+  if(!moving&&!needsRender)return;needsRender=false;
+  vT+=(theta-vT)*.12;vP+=(phi-vP)*.12;vR+=(rad-vR)*.12;vY+=(tY-vY)*.12;vX+=(tX-vX)*.12;vZ+=(tZ-vZ)*.12;
+  applyCam();renderer.render(scene,camera);})();
+}
+</script>
+
+</body></html>
